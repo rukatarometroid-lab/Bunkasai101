@@ -63,7 +63,7 @@
       position: relative;
       overflow: hidden;
       transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      z-index: 20; /* 前面に配置 */
+      z-index: 20;
     }
 
     .btn-gold-3d:hover {
@@ -241,7 +241,7 @@
     }
 
     /* ==========================================================================
-       3. ② 映画的トランジション扉（クリック判定ブロックバグ修正）
+       3. ② 映画的トランジション扉（クリック邪魔バグ完全解消）
        ========================================================================== */
     .gate-container {
       position: fixed;
@@ -249,7 +249,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none; /* 下の要素をクリックできるようにする */
+      pointer-events: none;
       z-index: 9999;
     }
 
@@ -260,8 +260,8 @@
       height: 100%;
       background: linear-gradient(135deg, #180909, #050000);
       box-shadow: 0 0 100px rgba(0,0,0,0.98) inset;
-      pointer-events: none; /* 扉自体もクリックを貫通させる */
-      display: none; /* ★初期は完全に非表示にしてクリックの邪魔を防ぐ */
+      pointer-events: none;
+      display: none; /* 初期状態は非表示 */
     }
 
     .gate-left { 
@@ -276,7 +276,7 @@
     }
 
     /* ==========================================================================
-       4. ③ ロビー（VIPルーム）
+       4. ③ ロビー
        ========================================================================== */
     #lobby-screen {
       background: var(--casino-bg);
@@ -640,7 +640,7 @@
     </div>
   </main>
 
-  <!-- ④ BLACKJACK ルール -->
+  <!-- ④ BLACKJACK ルール（完全復元） -->
   <section id="bj-screen" class="screen">
     <div class="table-rim"></div>
     <button class="exit-btn cinema-text" onclick="backToLobby('bj-screen')">LOBBY</button>
@@ -650,25 +650,34 @@
         <div class="sign-header cinema-text">BLACKJACK RULE</div>
         <div class="sign-body">
           <p>ディーラーとプレイヤーとの勝負で、配られたカードの合計が<strong>「21」を超えない範囲で21に近い方が勝ち</strong>となります。</p>
+          
           <div class="rule-section-title">カードのカウントルール</div>
           <ul>
             <li><strong>K, Q, J, 10</strong>：すべて「10」としてカウント</li>
             <li><strong>2 〜 9</strong>：実際の数字そのままとしてカウント</li>
             <li><strong>A</strong>：「1」または「11」の都合の良い方としてカウント</li>
           </ul>
+          
           <div class="rule-section-title">ゲーム進行の流れ</div>
           <ul>
-            <li><strong>1. ベットとディール</strong>：2枚ずつカードが配られます。</li>
-            <li><strong>2. アップカード</strong>：ディーラーのカードの1枚は伏せられます。</li>
-            <li><strong>3. プレイヤーの手番</strong>：21を超えない限り、何枚でも引けます。</li>
-            <li><strong>4. ディーラーの縛り</strong>：17以上になるまで引き続けます。</li>
+            <li><strong>1. ベットとディール</strong>：プレイヤーとディーラーに2枚ずつカードが配られます。</li>
+            <li><strong>2. アップカード</strong>：ディーラーのカードの1枚は表向き（アップカード）、もう1枚は裏向き（ホールのカード）になります。</li>
+            <li><strong>3. プレイヤーの手番</strong>：プレイヤーは「21」を超えない限り、何枚でもカードを追加（ヒット）できます。現在のカードで勝負する場合は「スタンド」を選択します。合計が21を超えると「バースト」となり、即負けとなります。</li>
+            <li><strong>4. ディーラーの縛り</strong>：ディーラーは、自分の手札の合計が「17」以上になるまで必ずカードを引き続けなければならず、「17」以上になったらそれ以上引くことはできません。</li>
+          </ul>
+
+          <div class="rule-section-title">勝敗と配当</div>
+          <ul>
+            <li>プレイヤーが勝利：<strong>1 : 1（2倍）</strong></li>
+            <li>最初の2枚で21（ブラックジャック）を達成して勝利：<strong>3 : 2（2.5倍）</strong></li>
+            <li>引き分け（プッシュ）：ベット額がそのまま払い戻されます。</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ⑤ INDIAN POKER ルール -->
+  <!-- ⑤ INDIAN POKER ルール（完全復元） -->
   <section id="indian-screen" class="screen">
     <div class="table-rim"></div>
     <button class="exit-btn cinema-text" onclick="backToLobby('indian-screen')">LOBBY</button>
@@ -677,17 +686,32 @@
       <div class="signboard">
         <div class="sign-header cinema-text">INDIAN POKER RULE</div>
         <div class="sign-body">
-          <p>相手のカードは見えても、自分のカードだけは見えない勝負です。</p>
+          <p>相手のカードは見えても、<strong>自分のカードだけは見えない</strong>という極限の心理戦ゲームです。</p>
+          
           <div class="rule-section-title">カードのランク（強さ）</div>
-          <p>最優先：<strong>A ＞ K ＞ Q ＞ J ＞ 10...</strong></p>
-          <div class="rule-section-title">スートのランク</div>
-          <p style="text-align: center; font-weight: bold; color: #ffd700;">♠ ＞ ♥ ＞ ♦ ＞ ♣</p>
+          <p>数字の強さは以下の順になります：</p>
+          <p style="text-align: center; font-weight: bold; color: var(--gold-bright); margin: 8px 0;">
+            A ＞ K ＞ Q ＞ J ＞ 10 ＞ 9 ＞ 8 ＞ 7 ＞ 6 ＞ 5 ＞ 4 ＞ 3 ＞ 2
+          </p>
+          
+          <div class="rule-section-title">スート（マーク）のランク</div>
+          <p>数字が同じだった場合は、スートの強さで勝敗を決します：</p>
+          <p style="text-align: center; font-weight: bold; color: #a62424; letter-spacing: 0.5em; margin: 8px 0;">
+            ♠ ＞ ♥ ＞ ♦ ＞ ♣
+          </p>
+          
+          <div class="rule-section-title">ゲームの進行</div>
+          <ul>
+            <li>1. 各プレイヤーに1枚ずつカードが配られます。</li>
+            <li>2. プレイヤーは自分のカードを見ずに、額にかざして相手に見えるようにします。</li>
+            <li>3. 相手のカードの強さと、相手の表情やベットの賭け方から、自分のカードが勝っているかを推理して勝負します。</li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ⑥ SIC BO ルール -->
+  <!-- ⑥ SIC BO ルール（完全復元） -->
   <section id="sicbo-screen" class="screen">
     <div class="table-rim"></div>
     <button class="exit-btn cinema-text" onclick="backToLobby('sicbo-screen')">LOBBY</button>
@@ -696,20 +720,57 @@
       <div class="signboard">
         <div class="sign-header cinema-text">SIC BO RULE</div>
         <div class="sign-body">
-          <p>3つのサイコロの出目を予想するゲームです。</p>
+          <p><strong>3つのサイコロ</strong>が振られ、その出目の組み合わせや合計数を予想するクラシックなカジノゲームです。</p>
+          
+          <div class="rule-section-title">主な賭け方と配当（オッズ表）</div>
           <table class="odds-table">
-            <thead><tr><th>役名</th><th>条件</th><th>配当</th></tr></thead>
+            <thead>
+              <tr>
+                <th>役名</th>
+                <th>的中条件</th>
+                <th>配当（オッズ）</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td>大 (Big)</td><td>合計11〜17</td><td>1 : 1</td></tr>
-              <tr><td>小 (Small)</td><td>合計4〜10</td><td>1 : 1</td></tr>
+              <tr>
+                <td><strong>大 (Big)</strong></td>
+                <td>3つのサイコロの合計が「11 〜 17」※ゾロ目を除く</td>
+                <td>1 : 1（2倍）</td>
+              </tr>
+              <tr>
+                <td><strong>小 (Small)</strong></td>
+                <td>3つのサイコロの合計が「4 〜 10」※ゾロ目を除く</td>
+                <td>1 : 1（2倍）</td>
+              </tr>
+              <tr>
+                <td><strong>奇数 (Odd)</strong></td>
+                <td>3つのサイコロの合計値が「奇数」※ゾロ目を除く</td>
+                <td>1 : 1（2倍）</td>
+              </tr>
+              <tr>
+                <td><strong>偶数 (Even)</strong></td>
+                <td>3つのサイコロの合計値が「偶数」※ゾロ目を除く</td>
+                <td>1 : 1（2倍）</td>
+              </tr>
+              <tr>
+                <td><strong>特定のトリプル</strong></td>
+                <td>指定した数字のゾロ目（例：3つとも「5」）</td>
+                <td>150 : 1（151倍）</td>
+              </tr>
+              <tr>
+                <td><strong>任意のトリプル</strong></td>
+                <td>どの数字でも良いのでゾロ目が発生する</td>
+                <td>24 : 1（25倍）</td>
+              </tr>
             </tbody>
           </table>
+          <p style="font-size: 0.75rem; color: #8c765c;">※「大・小・奇数・偶数」に賭けていた場合、3つのサイコロがすべて同じ数字（ゾロ目）になった時はハウスエッジとなり、プレイヤーの負けとなります。</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ⑦ エンドロール -->
+  <!-- ⑦ エンドロール（完全復元） -->
   <div id="credit-screen" class="screen">
     <div class="credit-container">
       <div class="credit-roll" id="roll-inner">
@@ -717,11 +778,35 @@
           <h2 class="cinema-text">BET OR NOT,<br>GET OR ROT.</h2>
           <p class="credit-subtitle">A CASINO SPEAKEASY EXPERIMENT</p>
         </div>
-        <div class="credit-section"><p class="credit-title">EXECUTIVE PRODUCER</p><p class="special-credit-name">LUCA</p></div>
-        <div class="credit-section"><p class="credit-title">設計責任者</p><p class="credit-name">上利 嘉寿</p></div>
-        <div class="credit-photo-wrap"><img src="agari.jpg" alt="上利嘉寿" class="credit-photo"></div>
-        <div class="credit-section"><p class="credit-title">展示監督</p><p class="credit-name">角貝 湊斗</p></div>
-        <div class="credit-section"><p class="credit-title">二刀流アーティスト</p><p class="credit-name">岡田 陽輝</p></div>
+        
+        <div class="credit-section">
+          <p class="credit-title">EXECUTIVE PRODUCER</p>
+          <p class="special-credit-name">LUCA</p>
+        </div>
+        
+        <div class="credit-section">
+          <p class="credit-title">設計責任者</p>
+          <p class="credit-name">上利 嘉寿</p>
+        </div>
+        
+        <div class="credit-photo-wrap">
+          <img src="agari.jpg" alt="上利嘉寿" class="credit-photo">
+        </div>
+        
+        <div class="credit-section">
+          <p class="credit-title">展示監督</p>
+          <p class="credit-name">角貝 湊斗</p>
+        </div>
+        
+        <div class="credit-section">
+          <p class="credit-title">二刀流アーティスト</p>
+          <p class="credit-name">岡田 陽輝</p>
+        </div>
+        
+        <div class="credit-section" style="margin-top: 30px;">
+          <p class="credit-title" style="color: #555;">PRESENTED BY</p>
+          <p class="cinema-text" style="font-size: 1rem; color: #6a5340; letter-spacing: 0.4em;">TEAM OUTLAWS</p>
+        </div>
       </div>
     </div>
   </div>
@@ -948,23 +1033,19 @@
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
-      // ★ボタンが押された瞬間、初めて扉の姿を現す（これでクリックの邪魔をしない）
+      // クリック直後に初めて扉の姿を現す
       gsap.set(gateL, { display: "block", left: "-50%" });
       gsap.set(gateR, { display: "block", right: "-50%" });
 
       gsap.timeline()
-        // 1. 中央にガシャン！と高速で閉じる
         .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
         .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
-        // 2. 閉じた瞬間に裏側で画面を切り替える
         .call(() => {
           document.getElementById('opening-screen').style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        // 3. 左右にスーーッと美しく開く
         .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut" })
         .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2")
-        // 4. 開ききったら再度非表示にして、ロビーのボタンクリックの邪魔をさせない
         .set([gateL, gateR], { display: "none" });
     };
 

@@ -14,10 +14,14 @@
        1. 漆黒・ゴールド・血赤の超高級カラーシステム
        ========================================================================== */
     :root {
+      /* 画像のような金属感のあるゴールドグラデーション */
       --gold-metallic: linear-gradient(135deg, #fcedc5 0%, #d19e53 25%, #f3d492 50%, #a6742a 80%, #ffd993 100%);
       --gold-solid: #d19e53;
       --gold-bright: #fcd58c;
+      /* レンズフレアのようなまばゆい光 */
       --gold-glow: 0 0 20px rgba(209, 158, 83, 0.6), 0 0 40px rgba(209, 158, 83, 0.2);
+      
+      /* カジノの深みのある赤と黒のグラデーション背景 */
       --casino-bg: radial-gradient(circle at 50% 35%, #250606 0%, #080101 60%, #000000 100%);
       --card-bg: linear-gradient(135deg, #180909 0%, #050101 100%);
     }
@@ -46,12 +50,14 @@
       text-transform: uppercase;
     }
 
-    /* 👑 「ENTER CASINO」ボタンデザイン */
+    /* ==========================================================================
+       👑 漆黒に黄金に輝く「ENTER CASINO」ボタンデザイン（完全再現）
+       ========================================================================== */
     .btn-gold-3d {
       background: linear-gradient(180deg, rgba(30, 20, 10, 0.9) 0%, rgba(10, 5, 0, 0.95) 100%);
       border: 2px solid var(--gold-solid);
       outline: 1px solid rgba(252, 237, 197, 0.3);
-      outline-offset: -5px;
+      outline-offset: -5px; /* 内側の二重ゴールド枠 */
       color: var(--gold-bright);
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(252, 213, 140, 0.4);
       box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(209, 158, 83, 0.2);
@@ -63,7 +69,6 @@
       position: relative;
       overflow: hidden;
       transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      z-index: 20;
     }
 
     .btn-gold-3d:hover {
@@ -80,6 +85,7 @@
       width: 50%; height: 100%;
       background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
       transform: skewX(-25deg);
+      transition: none;
     }
 
     .btn-gold-3d:hover::after {
@@ -87,7 +93,7 @@
       transition: all 0.8s ease-in-out;
     }
 
-    /* ロビー戻るボタン */
+    /* 戻る（ロビー）ボタン */
     .exit-btn {
       position: absolute;
       top: 25px;
@@ -112,6 +118,7 @@
       box-shadow: var(--gold-glow);
     }
 
+    /* 全画面レイアウトベース */
     .screen {
       position: absolute;
       top: 0;
@@ -123,7 +130,7 @@
     }
 
     /* ==========================================================================
-       2. ① オープニングシネマ
+       2. ① オープニングシネマ（VIPカジノ空間）
        ========================================================================== */
     #opening-screen {
       display: block;
@@ -131,6 +138,7 @@
       z-index: 10;
     }
 
+    /* 背後で回る光沢のあるルーレット */
     .bg-roulette {
       position: absolute;
       top: 55%;
@@ -186,6 +194,7 @@
       transform: scale(0);
     }
 
+    /* WELCOME TO THE GAME OF FATE */
     .pre-title {
       color: #9d1a1a;
       font-size: 0.8rem;
@@ -197,6 +206,7 @@
       transform: translateY(-10px);
     }
 
+    /* BET OR NOT, GET OR ROT. (高解像ゴールド立体文字) */
     .main-slogan {
       font-size: 3.2rem;
       font-weight: 900;
@@ -215,6 +225,7 @@
       .sub-title { font-size: 0.6rem !important; }
     }
 
+    /* ONE BET. ONE CHOICE. ONE FATE. */
     .sub-title {
       font-size: 0.75rem;
       color: #8c765c;
@@ -241,7 +252,7 @@
     }
 
     /* ==========================================================================
-       3. ② 映画的トランジション扉（クリック邪魔バグ完全解消）
+       3. ② 映画的トランジション扉（VIPゴールドライン）
        ========================================================================== */
     .gate-container {
       position: fixed;
@@ -250,7 +261,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 9999;
+      z-index: 999;
     }
 
     .gate {
@@ -260,8 +271,6 @@
       height: 100%;
       background: linear-gradient(135deg, #180909, #050000);
       box-shadow: 0 0 100px rgba(0,0,0,0.98) inset;
-      pointer-events: none;
-      display: none; /* 初期状態は非表示 */
     }
 
     .gate-left { 
@@ -276,7 +285,7 @@
     }
 
     /* ==========================================================================
-       4. ③ ロビー
+       4. ③ ロビー（VIPルーム）
        ========================================================================== */
     #lobby-screen {
       background: var(--casino-bg);
@@ -394,7 +403,7 @@
     }
 
     /* ==========================================================================
-       5. ♠ ゲーム・ルール画面共通レイアウト
+       5. ♠ ゲーム・ルール画面共通レイアウト（カジノ卓仕様）
        ========================================================================== */
     .table-rim {
       position: absolute;
@@ -453,9 +462,16 @@
       padding-right: 10px;
     }
 
-    .sign-body::-webkit-scrollbar { width: 5px; }
-    .sign-body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
-    .sign-body::-webkit-scrollbar-thumb { background: var(--gold-solid); border-radius: 2px; }
+    .sign-body::-webkit-scrollbar {
+      width: 5px;
+    }
+    .sign-body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .sign-body::-webkit-scrollbar-thumb {
+      background: var(--gold-solid);
+      border-radius: 2px;
+    }
 
     .rule-section-title {
       color: var(--gold-bright);
@@ -466,9 +482,19 @@
       padding-left: 10px;
     }
 
-    .sign-body strong { color: #fff; }
-    .sign-body ul { margin-left: 18px; margin-top: 6px; margin-bottom: 10px; }
-    .sign-body li { margin-bottom: 6px; }
+    .sign-body strong {
+      color: #fff;
+    }
+
+    .sign-body ul {
+      margin-left: 18px;
+      margin-top: 6px;
+      margin-bottom: 10px;
+    }
+
+    .sign-body li {
+      margin-bottom: 6px;
+    }
 
     .odds-table {
       width: 100%;
@@ -484,8 +510,14 @@
       text-align: left;
     }
 
-    .odds-table th { background: rgba(209, 158, 83, 0.15); color: var(--gold-bright); }
-    .odds-table tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+    .odds-table th {
+      background: rgba(209, 158, 83, 0.15);
+      color: var(--gold-bright);
+    }
+
+    .odds-table tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
 
     .rule-icon {
       font-size: 2.4rem;
@@ -495,8 +527,9 @@
     }
 
     /* ==========================================================================
-       6. 🎬 シネマティック・エンドロール
+       6. 🎬 アップグレード版シネマティック・エンドロール
        ========================================================================== */
+    /* エンドロール内の写真デザイン */
     .credit-photo-wrap {
       width: 100%;
       display: flex;
@@ -507,12 +540,13 @@
 
     .credit-photo {
       width: 100%;
-      max-width: 280px;
+      max-width: 280px; /* アップの写真が綺麗に収まるサイズ */
       height: auto;
       border-radius: 8px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(209, 158, 83, 0.25);
       border: 1px solid rgba(209, 158, 83, 0.4);
     }
+
 
     #credit-screen {
       background: #000;
@@ -542,7 +576,10 @@
       gap: 55px;
     }
 
-    .credit-logo { margin-bottom: 40px; }
+    .credit-logo {
+      margin-bottom: 40px;
+    }
+
     .credit-logo h2 {
       font-size: 2.5rem;
       background: var(--gold-metallic);
@@ -552,17 +589,53 @@
       filter: drop-shadow(0 0 30px rgba(209, 158, 83, 0.4));
     }
 
-    .credit-subtitle { color: #555; font-size: 0.75rem; letter-spacing: 0.4em; margin-top: 15px; }
-    .credit-section { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .credit-title { font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--gold-solid); letter-spacing: 0.35em; text-transform: uppercase; opacity: 0.8; }
-    .credit-name { font-size: 1.5rem; font-weight: 500; color: #fff; letter-spacing: 0.15em; text-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
-    .special-credit-name { font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 700; background: var(--gold-metallic); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.25em; filter: drop-shadow(var(--gold-glow)); }
+    .credit-subtitle {
+      color: #555;
+      font-size: 0.75rem;
+      letter-spacing: 0.4em;
+      margin-top: 15px;
+    }
+
+    .credit-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .credit-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      color: var(--gold-solid);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .credit-name {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: 0.15em;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .special-credit-name {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--gold-metallic);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.25em;
+      filter: drop-shadow(var(--gold-glow));
+    }
 
     /* ==========================================================================
        7. ❄️ ホワイトアウト & Thank You 画面
        ========================================================================== */
     #thankyou-screen {
-      background: #ffffff;
+      background: #ffffff; /* 純白背景 */
       z-index: 300;
       display: none;
       flex-direction: column;
@@ -571,12 +644,47 @@
       opacity: 0;
     }
 
-    .thankyou-wrap { text-align: center; padding: 20px; }
-    .thankyou-title { font-family: 'Cinzel', serif; font-size: 2.5rem; font-weight: 900; color: #111111; letter-spacing: 0.3em; line-height: 1.5; margin-bottom: 50px; text-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
-    .re-enter-btn { background: #111111; border: 1px solid #111111; color: #ffffff; padding: 16px 40px; font-size: 0.9rem; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.15); transition: all 0.3s ease; }
-    .re-enter-btn:hover { background: #ffffff; color: #111111; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(-2px); }
+    .thankyou-wrap {
+      text-align: center;
+      padding: 20px;
+    }
 
-    @media (max-width: 600px) { .thankyou-title { font-size: 1.8rem; } }
+    .thankyou-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #111111; /* 白背景に映える重厚な黒 */
+      letter-spacing: 0.3em;
+      line-height: 1.5;
+      margin-bottom: 50px;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .re-enter-btn {
+      background: #111111;
+      border: 1px solid #111111;
+      color: #ffffff;
+      padding: 16px 40px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+    }
+
+    .re-enter-btn:hover {
+      background: #ffffff;
+      color: #111111;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+      .thankyou-title {
+        font-size: 1.8rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -602,6 +710,7 @@
       </p>
     </div>
 
+    <!-- ENTER CASINO ボタン -->
     <div class="enter-trigger-wrap" id="btn-wrap">
       <button class="btn-gold-3d cinema-text" onclick="openTheGates()">ENTER CASINO</button>
     </div>
@@ -640,178 +749,243 @@
     </div>
   </main>
 
-  <!-- ④ BLACKJACK ルール（完全復元） -->
+  <!-- ④ BLACKJACK ルール -->
   <section id="bj-screen" class="screen">
     <div class="table-rim"></div>
     <button class="exit-btn cinema-text" onclick="backToLobby('bj-screen')">LOBBY</button>
+
     <div class="game-content">
       <div class="rule-icon">♠</div>
       <div class="signboard">
         <div class="sign-header cinema-text">BLACKJACK RULE</div>
         <div class="sign-body">
-          <p>ディーラーとプレイヤーとの勝負で、配られたカードの合計が<strong>「21」を超えない範囲で21に近い方が勝ち</strong>となります。</p>
-          
+          <p>ディーラーとプレイヤーとの勝負で、配られたカードの合計が<strong>「21」を超えない範囲で21に近い方が勝ち</strong>となります。21が最高で、21を超えてしまったらその場で負けとなります。</p>
+
           <div class="rule-section-title">カードのカウントルール</div>
           <ul>
             <li><strong>K, Q, J, 10</strong>：すべて「10」としてカウント</li>
             <li><strong>2 〜 9</strong>：実際の数字そのままとしてカウント</li>
             <li><strong>A</strong>：「1」または「11」の都合の良い方としてカウント</li>
           </ul>
-          
+
           <div class="rule-section-title">ゲーム進行の流れ</div>
           <ul>
-            <li><strong>1. ベットとディール</strong>：プレイヤーとディーラーに2枚ずつカードが配られます。</li>
-            <li><strong>2. アップカード</strong>：ディーラーのカードの1枚は表向き（アップカード）、もう1枚は裏向き（ホールのカード）になります。</li>
-            <li><strong>3. プレイヤーの手番</strong>：プレイヤーは「21」を超えない限り、何枚でもカードを追加（ヒット）できます。現在のカードで勝負する場合は「スタンド」を選択します。合計が21を超えると「バースト」となり、即負けとなります。</li>
-            <li><strong>4. ディーラーの縛り</strong>：ディーラーは、自分の手札の合計が「17」以上になるまで必ずカードを引き続けなければならず、「17」以上になったらそれ以上引くことはできません。</li>
+            <li><strong>1. ベットとディール</strong>：ベット完了後、ディーラーによってプレイヤーと自身に2枚ずつカードが配られます。</li>
+            <li><strong>2. アップカード</strong>：ディーラーのカードのうち1枚は伏せられた状態（ダウンカード）になります。</li>
+            <li><strong>3. プレイヤーの手番</strong>：合計値が21を超えない範囲内であれば、追加のカードを何枚でも受け取ることができます。</li>
+            <li><strong>4. ディーラーの縛り</strong>：ディーラーは、自身のカード合計値が「17以上」になるまで必ずカードを引き続けなければなりません。</li>
+            <li><strong>5. 基本配当</strong>：通常勝利時の配当は、賭け金額の「1倍（1:1）」となります。</li>
+            <li><strong>6. 引き分け（プッシュ）</strong>：両者の合計が同点の場合は引き分けとなり、賭け金はそのまま戻ります。</li>
           </ul>
 
-          <div class="rule-section-title">勝敗と配当</div>
+          <div class="rule-section-title">プレイヤーアクション</div>
           <ul>
-            <li>プレイヤーが勝利：<strong>1 : 1（2倍）</strong></li>
-            <li>最初の2枚で21（ブラックジャック）を達成して勝利：<strong>3 : 2（2.5倍）</strong></li>
-            <li>引き分け（プッシュ）：ベット額がそのまま払い戻されます。</li>
+            <li><strong>BLACK JACK (ブラックジャック)</strong>：最初の2枚のカード合計が21の場合。配当は「1.5倍（3:2）」になります。</li>
+            <li><strong>BUST (バースト)</strong>：合計が21を超えてしまった状態。その時点で即座に賭け金は没収されます。</li>
+            <li><strong>STAY (ステイ)</strong>：これ以上追加のカードを要求しない（現在の数字で勝負する）宣言。</li>
+            <li><strong>HIT (ヒット)</strong>：さらに追加のカードを要求する宣言。</li>
+            <li><strong>SURRENDER (サレンダー)</strong>：最初の2枚のカードを見て勝ち目がないと判断した際、勝負を降りること。賭け金の半分が没収され、半分が手元に戻ります。</li>
+            <li><strong>DOUBLE DOWN (ダブルダウン)</strong>：次の追加カードは「1回（1枚）のみ」引くという条件で、最初の賭け金を超えない範囲内で追加ベットをすること。</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ⑤ INDIAN POKER ルール（完全復元） -->
+  <!-- ⑤ INDIAN POKER ルール -->
   <section id="indian-screen" class="screen">
     <div class="table-rim"></div>
     <button class="exit-btn cinema-text" onclick="backToLobby('indian-screen')">LOBBY</button>
+
     <div class="game-content">
       <div class="rule-icon">🃏</div>
       <div class="signboard">
         <div class="sign-header cinema-text">INDIAN POKER RULE</div>
         <div class="sign-body">
-          <p>相手のカードは見えても、<strong>自分のカードだけは見えない</strong>という極限の心理戦ゲームです。</p>
-          
-          <div class="rule-section-title">カードのランク（強さ）</div>
-          <p>数字の強さは以下の順になります：</p>
-          <p style="text-align: center; font-weight: bold; color: var(--gold-bright); margin: 8px 0;">
-            A ＞ K ＞ Q ＞ J ＞ 10 ＞ 9 ＞ 8 ＞ 7 ＞ 6 ＞ 5 ＞ 4 ＞ 3 ＞ 2
-          </p>
-          
-          <div class="rule-section-title">スート（マーク）のランク</div>
-          <p>数字が同じだった場合は、スートの強さで勝敗を決します：</p>
-          <p style="text-align: center; font-weight: bold; color: #a62424; letter-spacing: 0.5em; margin: 8px 0;">
-            ♠ ＞ ♥ ＞ ♦ ＞ ♣
-          </p>
-          
-          <div class="rule-section-title">ゲームの進行</div>
+          <p>インディアンポーカーは、心理戦の要素を極限まで高めたカードゲームです。通常のポーカーと異なり、<strong>相手のカードは見えても、自分のカードだけは見えない</strong>という奇妙な状況で勝負を行います。</p>
+
+          <div class="rule-section-title">ゲーム進行の流れ</div>
           <ul>
-            <li>1. 各プレイヤーに1枚ずつカードが配られます。</li>
-            <li>2. プレイヤーは自分のカードを見ずに、額にかざして相手に見えるようにします。</li>
-            <li>3. 相手のカードの強さと、相手の表情やベットの賭け方から、自分のカードが勝っているかを推理して勝負します。</li>
+            <li><strong>1. 開始ベット（アンティ）</strong>：プレイヤー全員が場に基本のベットを置きます。</li>
+            <li><strong>2. カードの配布</strong>：各プレイヤーにカードが1枚ずつ配られます。</li>
+            <li><strong>3. 額への配置と対話</strong>：カードの中身を絶対に見ずに、全員自分の額（おでこ）にカードを当てて相手に見せます。<br>他のプレイヤーのカードを見て、表情の観察、リアクション、会話が可能です。質問をすることもできますが、カードの強さ（数字やスート）を直接教える行為は禁止です。また、質問に対する回答は真実である必要はなく、巧妙なブラフ（嘘）を織り交ぜても構いません。</li>
+            <li><strong>4. アクション</strong>：順番に「ベット（賭け金を上乗せする）」か「フォールド（降りる）」かを選択します。</li>
+            <li><strong>5. ショーダウン</strong>：すべてのベットアクションが終了した時点でカードを公開します。</li>
+            <li><strong>6. 勝敗判定</strong>：最もランクの高いカードを保持していたプレイヤーが、場に積まれたチップをすべて獲得します。</li>
+          </ul>
+
+          <div class="rule-section-title">カードのランク（強さ）</div>
+          <p>最も強いカードは <strong>A</strong> であり、以下 <strong>K ＞ Q ＞ J ＞ 10 ＞ ... ＞ 2</strong> の順に弱くなっていきます（2が最弱）。</p>
+
+          <div class="rule-section-title">ドロー防止：スート（マーク）のランク</div>
+          <p style="text-align: center; font-weight: bold; margin: 10px 0; color: #ffd700;">
+            ♠ (スペード) ＞ ♥ (ハート) ＞ ♦ (ダイヤ) ＞ ♣ (クラブ)
+          </p>
+
+          <div class="rule-section-title">アクション定義</div>
+          <ul>
+            <li><strong>ベット</strong>：勝利を確信し、任意の数のチップを場に追加で賭けること。</li>
+            <li><strong>フォールド</strong>：勝ち目がないと判断し、ゲームから降りること。フォールドしたプレイヤーは、それまでに賭けたチップ（アンティ含む）をすべて失います。フォールドの際は、カードを裏向きにして静かにテーブルへ伏せます。</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ⑥ SIC BO ルール（完全復元） -->
+  <!-- ⑥ SIC BO ルール -->
   <section id="sicbo-screen" class="screen">
     <div class="table-rim"></div>
     <button class="exit-btn cinema-text" onclick="backToLobby('sicbo-screen')">LOBBY</button>
+
     <div class="game-content">
       <div class="rule-icon">🎲</div>
       <div class="signboard">
         <div class="sign-header cinema-text">SIC BO RULE</div>
         <div class="sign-body">
-          <p><strong>3つのサイコロ</strong>が振られ、その出目の組み合わせや合計数を予想するクラシックなカジノゲームです。</p>
+          <p>大小（シックボー／Sic Bo）は、<strong>3つのサイコロをシェイカーで振り、その出目の合計値や特定の組み合わせを予想して賭ける</strong>アジア発祥の非常にエキサイティングなダイスゲームです。シンプルなものから高配当を狙えるものまで、多彩なベット方法が存在します。</p>
+
+          <div class="rule-section-title">主要な役と配当（オッズ一覧）</div>
+          <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 8px;">※配当表記は「1:X（1ドル賭けたら、元の1ドルに加えてXドルの利益が戻る）」形式です。</p>
           
-          <div class="rule-section-title">主な賭け方と配当（オッズ表）</div>
           <table class="odds-table">
             <thead>
               <tr>
                 <th>役名</th>
-                <th>的中条件</th>
+                <th>条件</th>
                 <th>配当（オッズ）</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>大 (Big)</strong></td>
-                <td>3つのサイコロの合計が「11 〜 17」※ゾロ目を除く</td>
-                <td>1 : 1（2倍）</td>
+                <td>合計値が【11〜17】（※ゾロ目は不成立・ディーラー総取り）</td>
+                <td><strong style="color: var(--gold-bright);">1 : 1</strong></td>
               </tr>
               <tr>
                 <td><strong>小 (Small)</strong></td>
-                <td>3つのサイコロの合計が「4 〜 10」※ゾロ目を除く</td>
-                <td>1 : 1（2倍）</td>
+                <td>合計値が【4〜10】（※ゾロ目は不成立・ディーラー総取り）</td>
+                <td><strong style="color: var(--gold-bright);">1 : 1</strong></td>
               </tr>
               <tr>
-                <td><strong>奇数 (Odd)</strong></td>
-                <td>3つのサイコロの合計値が「奇数」※ゾロ目を除く</td>
-                <td>1 : 1（2倍）</td>
+                <td><strong>合計数字ベット</strong></td>
+                <td>合計値が指定した数になることを予想。<br>
+                ・4 or 17<br>
+                ・5 or 16<br>
+                ・6 or 15<br>
+                ・7 or 14<br>
+                ・8 or 13<br>
+                ・9 or 12<br>
+                ・10 or 11</td>
+                <td><br>
+                <strong style="color: var(--gold-bright);">1 : 60</strong><br>
+                <strong style="color: var(--gold-bright);">1 : 30</strong><br>
+                <strong style="color: var(--gold-bright);">1 : 18</strong><br>
+                <strong style="color: var(--gold-bright);">1 : 12</strong><br>
+                <strong style="color: var(--gold-bright);">1 : 8</strong><br>
+                <strong style="color: var(--gold-bright);">1 : 7</strong><br>
+                <strong style="color: var(--gold-bright);">1 : 6</strong></td>
               </tr>
               <tr>
-                <td><strong>偶数 (Even)</strong></td>
-                <td>3つのサイコロの合計値が「偶数」※ゾロ目を除く</td>
-                <td>1 : 1（2倍）</td>
+                <td><strong>任意のゾロ目</strong></td>
+                <td>1から6のどの数字でも良いので、3つのサイコロすべてが同じ目になる。</td>
+                <td><strong style="color: var(--gold-bright);">1 : 30</strong></td>
               </tr>
               <tr>
-                <td><strong>特定のトリプル</strong></td>
-                <td>指定した数字のゾロ目（例：3つとも「5」）</td>
-                <td>150 : 1（151倍）</td>
+                <td><strong>特定のゾロ目</strong></td>
+                <td>指定した特定の数字（例：4-4-4など）で3つのサイコロが揃う。</td>
+                <td><strong style="color: var(--gold-bright);">1 : 180</strong></td>
               </tr>
               <tr>
-                <td><strong>任意のトリプル</strong></td>
-                <td>どの数字でも良いのでゾロ目が発生する</td>
-                <td>24 : 1（25倍）</td>
+                <td><strong>シングル数字×1</strong></td>
+                <td>指定した数字が3つのサイコロのうち「1つ」に出る。</td>
+                <td><strong style="color: var(--gold-bright);">1 : 1</strong></td>
+              </tr>
+              <tr>
+                <td><strong>シングル数字×2</strong></td>
+                <td>指定した数字が3つのサイコロのうち「2つ」に出る。</td>
+                <td><strong style="color: var(--gold-bright);">1 : 2</strong></td>
+              </tr>
+              <tr>
+                <td><strong>シングル数字×3</strong></td>
+                <td>指定した数字が3つのサイコロすべて「3つ」に出る。</td>
+                <td><strong style="color: var(--gold-bright);">1 : 12</strong></td>
               </tr>
             </tbody>
           </table>
-          <p style="font-size: 0.75rem; color: #8c765c;">※「大・小・奇数・偶数」に賭けていた場合、3つのサイコロがすべて同じ数字（ゾロ目）になった時はハウスエッジとなり、プレイヤーの負けとなります。</p>
+
+          <div class="rule-section-title">ゲーム進行</div>
+          <ul>
+            <li>プレイヤーは、ディーラーがダイスをシャッフルする前にボード上の予測されるエリアにチップを置きます。</li>
+            <li>「NO MORE BET（賭け締め切り）」の合図の後、ダイスが公開され、出目に応じた役へ配当が支払われます。</li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ⑦ エンドロール（完全復元） -->
+  <!-- ⑦ エンドロール -->
   <div id="credit-screen" class="screen">
     <div class="credit-container">
       <div class="credit-roll" id="roll-inner">
+        
         <div class="credit-logo">
           <h2 class="cinema-text">BET OR NOT,<br>GET OR ROT.</h2>
           <p class="credit-subtitle">A CASINO SPEAKEASY EXPERIMENT</p>
         </div>
-        
+
+        <!-- 役職と名前のクレジット -->
         <div class="credit-section">
-          <p class="credit-title">EXECUTIVE PRODUCER</p>
+          <p class="credit-title">EXECUTIVE PRODUCER / DIRECTOR</p>
           <p class="special-credit-name">LUCA</p>
         </div>
-        
+
         <div class="credit-section">
-          <p class="credit-title">設計責任者</p>
+          <p class="credit-title">四則演算ができない設計責任者</p>
           <p class="credit-name">上利 嘉寿</p>
         </div>
-        
+
+        <!-- 上利さんの写真 -->
         <div class="credit-photo-wrap">
-          <img src="agari.jpg" alt="上利嘉寿" class="credit-photo">
+          <img src="agari.jpg" alt="設計責任者 上利嘉寿" class="credit-photo">
         </div>
-        
+
         <div class="credit-section">
-          <p class="credit-title">展示監督</p>
+          <p class="credit-title">毎朝ギリギリ出勤 展示監督</p>
           <p class="credit-name">角貝 湊斗</p>
         </div>
-        
+
+        <!-- ★ 追加：岡田さんのクレジット -->
         <div class="credit-section">
-          <p class="credit-title">二刀流アーティスト</p>
+          <p class="credit-title">自称二刀流アーティスト</p>
           <p class="credit-name">岡田 陽輝</p>
         </div>
-        
-        <div class="credit-section" style="margin-top: 30px;">
-          <p class="credit-title" style="color: #555;">PRESENTED BY</p>
-          <p class="cinema-text" style="font-size: 1rem; color: #6a5340; letter-spacing: 0.4em;">TEAM OUTLAWS</p>
+
+        <div class="credit-section">
+          <p class="credit-title">指示だすだけのニート</p>
+          <p class="credit-name">カビル•アフリンアフィア</p>
         </div>
+
+        <div class="credit-section">
+          <p class="credit-title">SOUND SYNTHESIZER</p>
+          <p class="credit-name">WEB AUDIO API SYSTEM</p>
+        </div>
+
+        <div class="credit-section">
+          <p class="credit-title">VISUAL EFFECTS</p>
+          <p class="credit-name">GSAP SYSTEM</p>
+        </div>
+
+        <!-- クラスクレジット -->
+        <div class="credit-section">
+          <p class="credit-title">CREATED BY</p>
+          <p class="credit-name">CLASS 101</p>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- ⑧ ホワイトアウト 画面 -->
+  <!-- ⑧ ❄️ ホワイトアウト & Thank You 画面 -->
   <div id="thankyou-screen" class="screen">
     <div class="thankyou-wrap">
       <h2 class="thankyou-title cinema-text">THANK YOU FOR PLAYING</h2>
@@ -821,27 +995,38 @@
 
   <script>
     // ==========================================================================
-    // 🎵 WEB AUDIO BGM GENERATOR
+    // A. リアルタイム・ループBGM & 効果音エンジン（Web Audio API）
     // ==========================================================================
     let audioCtx = null;
     let bgmMasterGain = null;
     let schedulerInterval = null;
     let musicIsPlaying = false;
-    
+
+    // ミュージック・スケジューラ用変数（テンポ 165 BPM の高速ジャズ）
     const bpm = 165;
-    const stepTime = 60 / bpm / 2;
+    const stepTime = 60 / bpm / 2; // 8分音符の秒数
     let nextNoteTime = 0.0;
     let currentStep = 0;
-    const totalSteps = 64;
-    
+    const totalSteps = 64; // 8小節ループ
+
+    // ダークなカジノ調コード進行
     const chords = [
-      [60, 63, 67, 70], [60, 63, 67, 70], [58, 61, 65, 68], [58, 61, 65, 68],
-      [60, 63, 68, 72], [59, 62, 65, 68], [60, 63, 67, 70], [60, 63, 67, 70]
+      [60, 63, 67, 70], // Cm7
+      [60, 63, 67, 70],
+      [58, 61, 65, 68], // Bbm7
+      [58, 61, 65, 68],
+      [60, 63, 68, 72], // AbMaj7
+      [59, 62, 65, 68], // G7
+      [60, 63, 67, 70], // Cm7
+      [60, 63, 67, 70]
     ];
-    
+
+    // ジャズ・ウォーキング・ベースライン
     const bassPatterns = [
-      36, 43, 41, 39, 36, 39, 41, 42, 43, 46, 45, 43, 41, 38, 36, 35,
-      36, 40, 41, 43, 45, 41, 43, 47, 48, 43, 41, 39, 38, 35, 36, 38
+      36, 43, 41, 39, 36, 39, 41, 42,
+      43, 46, 45, 43, 41, 38, 36, 35,
+      36, 40, 41, 43, 45, 41, 43, 47,
+      48, 43, 41, 39, 38, 35, 36, 38
     ];
 
     const initAudio = () => {
@@ -858,51 +1043,98 @@
 
     const playPianoChord = (notes, time, duration) => {
       notes.forEach(midi => {
-        const osc1 = audioCtx.createOscillator(), osc2 = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
-        osc1.type = 'triangle'; osc2.type = 'sine';
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        osc1.type = 'triangle';
+        osc2.type = 'sine';
+
         const freq = 440 * Math.pow(2, (midi - 69) / 12);
-        osc1.frequency.value = freq; osc2.frequency.value = freq * 2;
-        osc1.connect(gainNode); osc2.connect(gainNode); gainNode.connect(bgmMasterGain);
+        osc1.frequency.value = freq;
+        osc2.frequency.value = freq * 2;
+
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(bgmMasterGain);
+
         gainNode.gain.setValueAtTime(0, time);
         gainNode.gain.linearRampToValueAtTime(0.04, time + 0.02);
         gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        osc1.start(time); osc2.start(time);
-        osc1.stop(time + duration + 0.1); osc2.stop(time + duration + 0.1);
+
+        osc1.start(time);
+        osc2.start(time);
+        osc1.stop(time + duration + 0.1);
+        osc2.stop(time + duration + 0.1);
       });
     };
 
     const playBassNote = (midi, time, duration) => {
-      const osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
       osc.type = 'triangle';
       const freq = 440 * Math.pow(2, (midi - 69) / 12);
       osc.frequency.setValueAtTime(freq, time);
-      osc.connect(gainNode); gainNode.connect(bgmMasterGain);
+
+      osc.connect(gainNode);
+      gainNode.connect(bgmMasterGain);
+
       gainNode.gain.setValueAtTime(0, time);
       gainNode.gain.linearRampToValueAtTime(0.12, time + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-      osc.start(time); osc.stop(time + duration + 0.1);
+
+      osc.start(time);
+      osc.stop(time + duration + 0.1);
     };
 
     const playHihat = (time, isSlam = false) => {
       const bufferSize = audioCtx.sampleRate * 0.05;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-      const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-      const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = isSlam ? 8000 : 11000;
-      const gain = audioCtx.createGain(); gain.gain.setValueAtTime(isSlam ? 0.04 : 0.02, time); gain.gain.exponentialRampToValueAtTime(0.001, time + (isSlam ? 0.04 : 0.02));
-      noise.connect(filter); filter.connect(gain); gain.connect(bgmMasterGain);
-      noise.start(time); noise.stop(time + 0.06);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = isSlam ? 8000 : 11000;
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(isSlam ? 0.04 : 0.02, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + (isSlam ? 0.04 : 0.02));
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(bgmMasterGain);
+
+      noise.start(time);
+      noise.stop(time + 0.06);
     };
 
     const scheduleNextBeats = () => {
       while (nextNoteTime < audioCtx.currentTime + 0.15) {
         const bar = Math.floor(currentStep / 8) % 8;
         const beatInBar = currentStep % 8;
-        if (beatInBar === 0 || beatInBar === 3 || beatInBar === 6) playPianoChord(chords[bar], nextNoteTime, stepTime * 1.8);
-        if (currentStep % 2 === 0) playBassNote(bassPatterns[Math.floor(currentStep / 2) % 32], nextNoteTime, stepTime * 1.8);
-        if (currentStep % 2 === 0) playHihat(nextNoteTime, true);
-        else if (currentStep % 4 === 1 || currentStep % 4 === 3) playHihat(nextNoteTime, false);
+
+        if (beatInBar === 0 || beatInBar === 3 || beatInBar === 6) {
+          playPianoChord(chords[bar], nextNoteTime, stepTime * 1.8);
+        }
+
+        if (currentStep % 2 === 0) {
+          const bassIdx = Math.floor(currentStep / 2) % 32;
+          playBassNote(bassPatterns[bassIdx], nextNoteTime, stepTime * 1.8);
+        }
+
+        if (currentStep % 2 === 0) {
+          playHihat(nextNoteTime, true);
+        } else if (currentStep % 4 === 1 || currentStep % 4 === 3) {
+          playHihat(nextNoteTime, false);
+        }
+
         nextNoteTime += stepTime;
         currentStep = (currentStep + 1) % totalSteps;
       }
@@ -910,108 +1142,205 @@
 
     const startMusic = () => {
       if (musicIsPlaying) return;
-      initAudio(); musicIsPlaying = true;
-      nextNoteTime = audioCtx.currentTime + 0.05; currentStep = 0;
+      initAudio();
+      musicIsPlaying = true;
+      nextNoteTime = audioCtx.currentTime + 0.05;
+      currentStep = 0;
+      bgmMasterGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
       schedulerInterval = setInterval(scheduleNextBeats, 50);
     };
 
     const stopMusic = () => {
-      if (schedulerInterval) clearInterval(schedulerInterval);
+      if (schedulerInterval) {
+        clearInterval(schedulerInterval);
+      }
       musicIsPlaying = false;
     };
 
     const playChipStack = () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
-      const b = audioCtx.createOscillator(), c = audioCtx.createOscillator(), g = audioCtx.createGain();
-      b.type = 'triangle'; b.frequency.setValueAtTime(140, now); b.frequency.exponentialRampToValueAtTime(80, now + 0.08);
-      c.type = 'sine'; c.frequency.setValueAtTime(2200, now); c.frequency.exponentialRampToValueAtTime(1500, now + 0.02);
-      b.connect(g); c.connect(g); g.connect(audioCtx.destination);
-      b.start(now); c.start(now); g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-      b.stop(now + 0.09); c.stop(now + 0.09);
+      const bodyOsc = audioCtx.createOscillator();
+      const clickOsc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      bodyOsc.type = 'triangle';
+      bodyOsc.frequency.setValueAtTime(140, now);
+      bodyOsc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+
+      clickOsc.type = 'sine';
+      clickOsc.frequency.setValueAtTime(2200, now);
+      clickOsc.frequency.exponentialRampToValueAtTime(1500, now + 0.02);
+
+      bodyOsc.connect(gain);
+      clickOsc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      bodyOsc.start(now);
+      clickOsc.start(now);
+
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      bodyOsc.stop(now + 0.09);
+      clickOsc.stop(now + 0.09);
     };
 
     const playDiceCupShaker = () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
       for (let i = 0; i < 7; i++) {
-        const d = i * 0.06, o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type = 'triangle'; o.frequency.setValueAtTime(120 + Math.random() * 90, now + d);
-        o.connect(g); g.connect(audioCtx.destination); o.start(now + d);
-        g.gain.setValueAtTime(0.12 * (1 - i * 0.12), now + d); g.gain.exponentialRampToValueAtTime(0.001, now + d + 0.04);
-        o.stop(now + d + 0.05);
+        const delay = i * 0.06;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(120 + Math.random() * 90, now + delay);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + delay);
+        gain.gain.setValueAtTime(0.12 * (1 - i * 0.12), now + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.04);
+        osc.stop(now + delay + 0.05);
       }
     };
 
     const playCardFlip = () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
-      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-      o.type = 'triangle'; o.frequency.setValueAtTime(280, now); o.frequency.exponentialRampToValueAtTime(90, now + 0.12);
-      o.connect(g); g.connect(audioCtx.destination); o.start(now);
-      g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-      o.stop(now + 0.13);
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(280, now);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.12);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc.stop(now + 0.13);
     };
 
     const playJackpotChime = () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
-      [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50].forEach((f, i) => {
-        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type = 'sine'; o.frequency.setValueAtTime(f, now + (i * 0.08));
-        o.connect(g); g.connect(audioCtx.destination); o.start(now + (i * 0.08));
-        g.gain.setValueAtTime(0.06, now + (i * 0.08)); g.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.08) + 0.4);
-        o.stop(now + (i * 0.08) + 0.42);
+      const pentatonic = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+      pentatonic.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + (idx * 0.08));
+        gain.gain.setValueAtTime(0.06, now + (idx * 0.08));
+        gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.08) + 0.4);
+        osc.stop(now + (idx * 0.08) + 0.42);
       });
     };
 
     // ==========================================================================
-    // 🎨 パーティクル演出
+    // B. ゴールド・パーティクル ＆ 流れる火花（スパーク）
     // ==========================================================================
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
-    let particles = [], sparks = [];
-    
-    const resizeCanvas = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    let particles = [];
+    let sparks = [];
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
+    // ふわふわ舞う金粉
     class GoldParticle {
       constructor() { this.reset(); }
-      reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 1; this.speedY = Math.random() * 0.4 + 0.2; this.speedX = Math.random() * 0.4 - 0.2; this.alpha = Math.random() * 0.5 + 0.2; }
-      update() { this.y += this.speedY; this.x += this.speedX; if (this.y > canvas.height) { this.y = -10; this.x = Math.random() * canvas.width; } }
-      draw() { ctx.fillStyle = `rgba(252, 213, 140, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedY = Math.random() * 0.4 + 0.2;
+        this.speedX = Math.random() * 0.4 - 0.2;
+        this.alpha = Math.random() * 0.5 + 0.2;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y > canvas.height) {
+          this.y = -10;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+      draw() {
+        ctx.fillStyle = `rgba(252, 213, 140, ${this.alpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
+    // 画面を走る斜めの火花スパーク
     class Spark {
       constructor() { this.reset(); }
-      reset() { this.x = Math.random() * canvas.width; this.y = -20; this.length = Math.random() * 80 + 40; this.speedY = Math.random() * 4 + 3; this.speedX = (Math.random() * 3 + 2) * (Math.random() > 0.5 ? 1 : -1); this.width = Math.random() * 1.5 + 0.5; this.alpha = Math.random() * 0.6 + 0.4; }
-      update() { this.x += this.speedX; this.y += this.speedY; if (this.y > canvas.height || this.x < -100 || this.x > canvas.width + 100) this.reset(); }
-      draw() { ctx.strokeStyle = `rgba(255, 215, 0, ${this.alpha})`; ctx.lineWidth = this.width; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x - this.speedX * 3, this.y - this.speedY * 3); ctx.stroke(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+        this.length = Math.random() * 80 + 40;
+        this.speedY = Math.random() * 4 + 3;
+        this.speedX = (Math.random() * 3 + 2) * (Math.random() > 0.5 ? 1 : -1);
+        this.width = Math.random() * 1.5 + 0.5;
+        this.alpha = Math.random() * 0.6 + 0.4;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.y > canvas.height || this.x < -100 || this.x > canvas.width + 100) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.strokeStyle = `rgba(255, 215, 0, ${this.alpha})`;
+        ctx.lineWidth = this.width;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - this.speedX * 3, this.y - this.speedY * 3);
+        ctx.stroke();
+      }
     }
 
-    for (let i = 0; i < 50; i++) particles.push(new GoldParticle());
-    for (let i = 0; i < 6; i++) sparks.push(new Spark());
-    
+    for (let i = 0; i < 50; i++) { particles.push(new GoldParticle()); }
+    for (let i = 0; i < 6; i++) { sparks.push(new Spark()); }
+
     const animateParticles = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // 金粉描画
       particles.forEach(p => { p.update(); p.draw(); });
+      // スパーク描画
       sparks.forEach(s => { s.update(); s.draw(); });
+
       requestAnimationFrame(animateParticles);
     };
     animateParticles();
 
     // ==========================================================================
-    // 🎬 トランジション扉アニメーション（クリック判定バグ完全修正版）
+    // C. 映画的トランジション扉 ＆ 画面遷移
     // ==========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       gsap.to("#main-roulette", { rotate: 360, duration: 65, repeat: -1, ease: "none" });
-      gsap.to(".floating-suit", { x: '110vw', y: 'random(-50, 50)', rotate: 'random(-180, 180)', duration: 10, stagger: 2.5, repeat: -1, ease: "none" });
 
-      // 初期起動時は扉を絶対に非表示＆外側待機
-      gsap.set("#gate-l", { left: "-50%", display: "none" });
-      gsap.set("#gate-r", { right: "-50%", display: "none" });
+      gsap.to(".floating-suit", {
+        x: '110vw',
+        y: 'random(-50, 50)',
+        rotate: 'random(-180, 180)',
+        duration: 10,
+        stagger: 2.5,
+        repeat: -1,
+        ease: "none"
+      });
 
+      // タイトルコールの重厚なフェードイン
       gsap.timeline()
         .to("#spark", { scale: 3, opacity: 1, duration: 1.5, delay: 0.5, ease: "power4.out" })
         .to("#spark", { scale: 0, opacity: 0, duration: 0.8, ease: "power4.in" })
@@ -1024,135 +1353,147 @@
         });
     });
 
-    // 🚪 ボタンを押してカジノへ入る時
     const openTheGates = () => {
-      initAudio(); 
-      startMusic(); 
+      initAudio();
+      startMusic();
       playJackpotChime();
-      
+
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
-      // クリック直後に初めて扉の姿を現す
-      gsap.set(gateL, { display: "block", left: "-50%" });
-      gsap.set(gateR, { display: "block", right: "-50%" });
-
       gsap.timeline()
-        .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
-        .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
-        .call(() => {
+        .to("#opening-screen", { opacity: 0, duration: 0.8, ease: "power2.inOut" })
+        .to(gateL, { left: '0%', duration: 0.5, ease: "power3.out" }, "-=0.5")
+        .to(gateR, { right: '0%', duration: 0.5, ease: "power3.out" }, "-=0.5")
+        .add(() => {
           document.getElementById('opening-screen').style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut" })
-        .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2")
-        .set([gateL, gateR], { display: "none" });
+        .to(gateL, { left: '-50%', duration: 1.6, ease: "power3.inOut", delay: 0.2 })
+        .to(gateR, { right: '-50%', duration: 1.6, ease: "power3.inOut" }, "-=1.6");
     };
 
-    // 🃏 ロビーから各ゲーム画面へ移動する時
     const goToGame = (screenId, sfxType) => {
-      if (sfxType === 'dice') playDiceCupShaker(); else playChipStack();
+      if (sfxType === 'dice') {
+        playDiceCupShaker();
+      } else {
+        playChipStack();
+      }
       
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
-      gsap.set(gateL, { display: "block", left: "-50%" });
-      gsap.set(gateR, { display: "block", right: "-50%" });
-
       gsap.timeline()
-        .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
-        .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
-        .call(() => {
+        .to(gateL, { left: '0%', duration: 0.6, ease: "power3.inOut" })
+        .to(gateR, { right: '0%', duration: 0.6, ease: "power3.inOut" }, "-=0.6")
+        .add(() => {
           document.getElementById('lobby-screen').style.display = 'none';
           document.getElementById(screenId).style.display = 'block';
         })
-        .to(gateL, { left: '-50%', duration: 1.1, ease: "power3.out" })
-        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1")
-        .set([gateL, gateR], { display: "none" });
+        .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut", delay: 0.15 })
+        .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2");
     };
 
-    // 🚪 ゲーム画面からロビーへ戻る時
     const backToLobby = (currentId) => {
       playCardFlip();
-      
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
-      gsap.set(gateL, { display: "block", left: "-50%" });
-      gsap.set(gateR, { display: "block", right: "-50%" });
-
       gsap.timeline()
-        .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
-        .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
-        .call(() => {
+        .to(gateL, { left: '0%', duration: 0.6, ease: "power3.inOut" })
+        .to(gateR, { right: '0%', duration: 0.6, ease: "power3.inOut" }, "-=0.6")
+        .add(() => {
           document.getElementById(currentId).style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        .to(gateL, { left: '-50%', duration: 1.1, ease: "power3.out" })
-        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1")
-        .set([gateL, gateR], { display: "none" });
+        .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut", delay: 0.15 })
+        .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2");
     };
 
-    // 🎬 エンドロール画面を表示
+    // ==========================================================================
+    // D. エンドロール ＆ ホワイトアウト
+    // ==========================================================================
     const showCredits = () => {
       playChipStack();
+      const lobbyScreen = document.getElementById('lobby-screen');
+      const creditScreen = document.getElementById('credit-screen');
       const rollInner = document.getElementById('roll-inner');
-      document.getElementById('lobby-screen').style.display = 'none';
-      document.getElementById('credit-screen').style.display = 'flex';
+
+      lobbyScreen.style.display = 'none';
+      creditScreen.style.display = 'flex';
       
+      // 画面の下端（100vh）からスタートさせる
       gsap.set(rollInner, { y: window.innerHeight });
+
       if (bgmMasterGain) {
         gsap.to(bgmMasterGain.gain, { value: 0, duration: 20 });
       }
 
+      // クレジット全体の高さに応じて、ちょうどいい速度（秒数）を自動計算
       const totalHeight = rollInner.offsetHeight;
-      gsap.to(rollInner, { 
-        y: -totalHeight - 100, 
-        duration: totalHeight * 0.025, 
-        ease: "none", 
-        force3D: true, 
-        onComplete: fadeOutToWhite 
+      const smoothDuration = totalHeight * 0.025; // 数字を大きくすると遅く、小さくすると早くなります
+
+      // 🎥 ここでパソコンのグラフィックパワー（GPU）を強制解放して超滑らかにします
+      gsap.to(rollInner, {
+        y: -totalHeight - 100,
+        duration: smoothDuration,
+        ease: "none",         // 途中でガタつかないように等速で動かす
+        force3D: true,        // ★3Dレンダリングを強制して、文字のブレやカクつきを完全防止
+        onComplete: () => {
+          fadeOutToWhite();
+        }
       });
     };
 
-    const fadeOutToWhite = () => { 
-      stopMusic(); 
-      document.getElementById('thankyou-screen').style.display = 'flex'; 
+    const fadeOutToWhite = () => {
+      const creditScreen = document.getElementById('credit-screen');
+      const thankyouScreen = document.getElementById('thankyou-screen');
+
+      stopMusic();
+      thankyouScreen.style.display = 'flex';
+
       gsap.timeline()
-        .to("#thankyou-screen", { opacity: 1, duration: 2.5, ease: "power2.inOut" })
-        .call(() => { 
-          document.getElementById('credit-screen').style.display = 'none'; 
+        .to(thankyouScreen, { opacity: 1, duration: 2.5, ease: "power2.inOut" })
+        .add(() => {
+          creditScreen.style.display = 'none';
           playJackpotChime(); 
-        }); 
+        });
     };
 
-    const resetOpening = () => { 
+    const resetOpening = () => {
+      const thankyouScreen = document.getElementById('thankyou-screen');
+      const openingScreen = document.getElementById('opening-screen');
+      const gateL = document.getElementById('gate-l');
+      const gateR = document.getElementById('gate-r');
+
       gsap.timeline()
-        .to("#thankyou-screen", { opacity: 0, duration: 1.0, ease: "power2.inOut" })
-        .call(() => { 
-          document.getElementById('thankyou-screen').style.display = 'none'; 
-          document.getElementById('lobby-screen').style.display = 'none'; 
-          document.getElementById('bj-screen').style.display = 'none'; 
-          document.getElementById('indian-screen').style.display = 'none'; 
-          document.getElementById('sicbo-screen').style.display = 'none'; 
-          document.getElementById('credit-screen').style.display = 'none'; 
-          document.getElementById('opening-screen').style.display = 'block'; 
+        .to(thankyouScreen, { opacity: 0, duration: 1.0, ease: "power2.inOut" })
+        .add(() => {
+          thankyouScreen.style.display = 'none';
+          document.getElementById('lobby-screen').style.display = 'none';
+          document.getElementById('bj-screen').style.display = 'none';
+          document.getElementById('indian-screen').style.display = 'none';
+          document.getElementById('sicbo-screen').style.display = 'none';
+          document.getElementById('credit-screen').style.display = 'none';
           
-          gsap.set('#opening-screen', { opacity: 1 }); 
-          gsap.set('#gate-l', { left: '-50%', display: "none" }); 
-          gsap.set('#gate-r', { right: '-50%', display: "none" }); 
-          gsap.set("#pre-title-text", { opacity: 0, y: -10 }); 
-          gsap.set("#logo-text", { opacity: 0 }); 
-          gsap.set("#sub-title-text", { opacity: 0, y: 10 }); 
-          gsap.set("#btn-wrap", { opacity: 0, y: 0 }); 
+          openingScreen.style.display = 'block';
+          gsap.set(openingScreen, { opacity: 1 });
+          
+          gsap.set(gateL, { left: '-50%' });
+          gsap.set(gateR, { right: '-50%' });
+
+          gsap.set("#pre-title-text", { opacity: 0, y: -10 });
+          gsap.set("#logo-text", { opacity: 0 });
+          gsap.set("#sub-title-text", { opacity: 0, y: 10 });
+          gsap.set("#btn-wrap", { opacity: 0, y: 0 });
           
           gsap.timeline()
             .to("#pre-title-text", { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" })
             .to("#logo-text", { opacity: 1, duration: 1.8, ease: "power3.out" }, "-=0.4")
             .to("#sub-title-text", { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }, "-=0.6")
-            .to("#btn-wrap", { opacity: 1, duration: 1.0, ease: "power3.out" }, "-=0.8"); 
-        }); 
+            .to("#btn-wrap", { opacity: 1, duration: 1.0, ease: "power3.out" }, "-=0.8");
+        });
     };
   </script>
 </body>
-</html>
+            </html>

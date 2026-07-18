@@ -240,7 +240,7 @@
     }
 
     /* ==========================================================================
-       3. ② 映画的トランジション扉（★バグ修正：初期配置を中央で固定）
+       3. ② 映画的トランジション扉（固定配置）
        ========================================================================== */
     .gate-container {
       position: fixed;
@@ -249,7 +249,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 9999; /* 常に最前面に配置 */
+      z-index: 9999;
     }
 
     .gate {
@@ -261,14 +261,13 @@
       box-shadow: 0 0 100px rgba(0,0,0,0.98) inset;
     }
 
-    /* ★初期配置を「0%（中央で閉じている状態）」に変更 */
     .gate-left { 
-      left: 0%; 
+      left: -50%; 
       border-right: 3px solid var(--gold-solid); 
       box-shadow: 5px 0 30px rgba(209, 158, 83, 0.3), inset -100px 0 100px rgba(0,0,0,0.9);
     }
     .gate-right { 
-      right: 0%; 
+      right: -50%; 
       border-left: 3px solid var(--gold-solid); 
       box-shadow: -5px 0 30px rgba(209, 158, 83, 0.3), inset 100px 0 100px rgba(0,0,0,0.9);
     }
@@ -733,13 +732,37 @@
   </div>
 
   <script>
-    // Audio エンジン部 省略なし
-    let audioCtx = null, bgmMasterGain = null, schedulerInterval = null, musicIsPlaying = false;
-    const bpm = 165, stepTime = 60 / bpm / 2;
-    let nextNoteTime = 0.0, currentStep = 0;
+    // ==========================================================================
+    // 🎵 WEB AUDIO BGM GENERATOR (完全に1行ずつ展開)
+    // ==========================================================================
+    let audioCtx = null;
+    let bgmMasterGain = null;
+    let schedulerInterval = null;
+    let musicIsPlaying = false;
+    
+    const bpm = 165;
+    const stepTime = 60 / bpm / 2;
+    let nextNoteTime = 0.0;
+    let currentStep = 0;
     const totalSteps = 64;
-    const chords = [[60, 63, 67, 70],[60, 63, 67, 70],[58, 61, 65, 68],[58, 61, 65, 68],[60, 63, 68, 72],[59, 62, 65, 68],[60, 63, 67, 70],[60, 63, 67, 70]];
-    const bassPatterns = [36, 43, 41, 39, 36, 39, 41, 42, 43, 46, 45, 43, 41, 38, 36, 35, 36, 40, 41, 43, 45, 41, 43, 47, 48, 43, 41, 39, 38, 35, 36, 38];
+    
+    const chords = [
+      [60, 63, 67, 70],
+      [60, 63, 67, 70],
+      [58, 61, 65, 68],
+      [58, 61, 65, 68],
+      [60, 63, 68, 72],
+      [59, 62, 65, 68],
+      [60, 63, 67, 70],
+      [60, 63, 67, 70]
+    ];
+    
+    const bassPatterns = [
+      36, 43, 41, 39, 36, 39, 41, 42,
+      43, 46, 45, 43, 41, 38, 36, 35,
+      36, 40, 41, 43, 45, 41, 43, 47,
+      48, 43, 41, 39, 38, 35, 36, 38
+    ];
 
     const initAudio = () => {
       if (!audioCtx) {
@@ -748,79 +771,287 @@
         bgmMasterGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
         bgmMasterGain.connect(audioCtx.destination);
       }
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
     };
 
     const playPianoChord = (notes, time, duration) => {
       notes.forEach(midi => {
-        const osc1 = audioCtx.createOscillator(), osc2 = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
-        osc1.type = 'triangle'; osc2.type = 'sine';
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc1.type = 'triangle';
+        osc2.type = 'sine';
+        
         const freq = 440 * Math.pow(2, (midi - 69) / 12);
-        osc1.frequency.value = freq; osc2.frequency.value = freq * 2;
-        osc1.connect(gainNode); osc2.connect(gainNode); gainNode.connect(bgmMasterGain);
+        osc1.frequency.value = freq;
+        osc2.frequency.value = freq * 2;
+        
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(bgmMasterGain);
+        
         gainNode.gain.setValueAtTime(0, time);
         gainNode.gain.linearRampToValueAtTime(0.04, time + 0.02);
         gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        osc1.start(time); osc2.start(time); osc1.stop(time + duration + 0.1); osc2.stop(time + duration + 0.1);
+        
+        osc1.start(time);
+        osc2.start(time);
+        osc1.stop(time + duration + 0.1);
+        osc2.stop(time + duration + 0.1);
       });
     };
 
     const playBassNote = (midi, time, duration) => {
-      const osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
-      osc.type = 'triangle'; const freq = 440 * Math.pow(2, (midi - 69) / 12);
-      osc.frequency.setValueAtTime(freq, time); osc.connect(gainNode); gainNode.connect(bgmMasterGain);
-      gainNode.gain.setValueAtTime(0, time); gainNode.gain.linearRampToValueAtTime(0.12, time + 0.01); gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-      osc.start(time); osc.stop(time + duration + 0.1);
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = 'triangle';
+      const freq = 440 * Math.pow(2, (midi - 69) / 12);
+      osc.frequency.setValueAtTime(freq, time);
+      
+      osc.connect(gainNode);
+      gainNode.connect(bgmMasterGain);
+      
+      gainNode.gain.setValueAtTime(0, time);
+      gainNode.gain.linearRampToValueAtTime(0.12, time + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
+      
+      osc.start(time);
+      osc.stop(time + duration + 0.1);
     };
 
     const playHihat = (time, isSlam = false) => {
-      const bufferSize = audioCtx.sampleRate * 0.05, buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate), data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-      const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-      const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = isSlam ? 8000 : 11000;
-      const gain = audioCtx.createGain(); gain.gain.setValueAtTime(isSlam ? 0.04 : 0.02, time); gain.gain.exponentialRampToValueAtTime(0.001, time + (isSlam ? 0.04 : 0.02));
-      noise.connect(filter); filter.connect(gain); gain.connect(bgmMasterGain);
-      noise.start(time); noise.stop(time + 0.06);
+      const bufferSize = audioCtx.sampleRate * 0.05;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = isSlam ? 8000 : 11000;
+      
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(isSlam ? 0.04 : 0.02, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + (isSlam ? 0.04 : 0.02));
+      
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(bgmMasterGain);
+      
+      noise.start(time);
+      noise.stop(time + 0.06);
     };
 
     const scheduleNextBeats = () => {
       while (nextNoteTime < audioCtx.currentTime + 0.15) {
-        const bar = Math.floor(currentStep / 8) % 8, beatInBar = currentStep % 8;
-        if (beatInBar === 0 || beatInBar === 3 || beatInBar === 6) playPianoChord(chords[bar], nextNoteTime, stepTime * 1.8);
-        if (currentStep % 2 === 0) playBassNote(bassPatterns[Math.floor(currentStep / 2) % 32], nextNoteTime, stepTime * 1.8);
-        if (currentStep % 2 === 0) playHihat(nextNoteTime, true); else if (currentStep % 4 === 1 || currentStep % 4 === 3) playHihat(nextNoteTime, false);
-        nextNoteTime += stepTime; currentStep = (currentStep + 1) % totalSteps;
+        const bar = Math.floor(currentStep / 8) % 8;
+        const beatInBar = currentStep % 8;
+        
+        if (beatInBar === 0 || beatInBar === 3 || beatInBar === 6) {
+          playPianoChord(chords[bar], nextNoteTime, stepTime * 1.8);
+        }
+        if (currentStep % 2 === 0) {
+          playBassNote(bassPatterns[Math.floor(currentStep / 2) % 32], nextNoteTime, stepTime * 1.8);
+        }
+        if (currentStep % 2 === 0) {
+          playHihat(nextNoteTime, true);
+        } else if (currentStep % 4 === 1 || currentStep % 4 === 3) {
+          playHihat(nextNoteTime, false);
+        }
+        
+        nextNoteTime += stepTime;
+        currentStep = (currentStep + 1) % totalSteps;
       }
     };
 
-    const startMusic = () => { if (musicIsPlaying) return; initAudio(); musicIsPlaying = true; nextNoteTime = audioCtx.currentTime + 0.05; currentStep = 0; schedulerInterval = setInterval(scheduleNextBeats, 50); };
-    const stopMusic = () => { if (schedulerInterval) clearInterval(schedulerInterval); musicIsPlaying = false; };
-    const playChipStack = () => { if (!audioCtx) return; const now = audioCtx.currentTime, b = audioCtx.createOscillator(), c = audioCtx.createOscillator(), g = audioCtx.createGain(); b.type = 'triangle'; b.frequency.setValueAtTime(140, now); b.frequency.exponentialRampToValueAtTime(80, now + 0.08); c.type = 'sine'; c.frequency.setValueAtTime(2200, now); c.frequency.exponentialRampToValueAtTime(1500, now + 0.02); b.connect(g); c.connect(g); g.connect(audioCtx.destination); b.start(now); c.start(now); g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.08); b.stop(now + 0.09); c.stop(now + 0.09); };
-    const playDiceCupShaker = () => { if (!audioCtx) return; const now = audioCtx.currentTime; for (let i = 0; i < 7; i++) { const d = i * 0.06, o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(120 + Math.random() * 90, now + d); o.connect(g); g.connect(audioCtx.destination); o.start(now + d); g.gain.setValueAtTime(0.12 * (1 - i * 0.12), now + d); g.gain.exponentialRampToValueAtTime(0.001, now + d + 0.04); o.stop(now + d + 0.05); } };
-    const playCardFlip = () => { if (!audioCtx) return; const now = audioCtx.currentTime, o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(280, now); o.frequency.exponentialRampToValueAtTime(90, now + 0.12); o.connect(g); g.connect(audioCtx.destination); o.start(now); g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.12); o.stop(now + 0.13); };
-    const playJackpotChime = () => { if (!audioCtx) return; const now = audioCtx.currentTime; [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50].forEach((f, i) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f, now + (i * 0.08)); o.connect(g); g.connect(audioCtx.destination); o.start(now + (i * 0.08)); g.gain.setValueAtTime(0.06, now + (i * 0.08)); g.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.08) + 0.4); o.stop(now + (i * 0.08) + 0.42); }); };
+    const startMusic = () => {
+      if (musicIsPlaying) return;
+      initAudio();
+      musicIsPlaying = true;
+      nextNoteTime = audioCtx.currentTime + 0.05;
+      currentStep = 0;
+      schedulerInterval = setInterval(scheduleNextBeats, 50);
+    };
 
-    // パーティクルアニメーション
-    const canvas = document.getElementById('particle-canvas'), ctx = canvas.getContext('2d');
-    let particles = [], sparks = [];
-    const resizeCanvas = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    window.addEventListener('resize', resizeCanvas); resizeCanvas();
+    const stopMusic = () => {
+      if (schedulerInterval) {
+        clearInterval(schedulerInterval);
+      }
+      musicIsPlaying = false;
+    };
 
-    class GoldParticle { constructor() { this.reset(); } reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 1; this.speedY = Math.random() * 0.4 + 0.2; this.speedX = Math.random() * 0.4 - 0.2; this.alpha = Math.random() * 0.5 + 0.2; } update() { this.y += this.speedY; this.x += this.speedX; if (this.y > canvas.height) { this.y = -10; this.x = Math.random() * canvas.width; } } draw() { ctx.fillStyle = `rgba(252, 213, 140, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); } }
-    class Spark { constructor() { this.reset(); } reset() { this.x = Math.random() * canvas.width; this.y = -20; this.length = Math.random() * 80 + 40; this.speedY = Math.random() * 4 + 3; this.speedX = (Math.random() * 3 + 2) * (Math.random() > 0.5 ? 1 : -1); this.width = Math.random() * 1.5 + 0.5; this.alpha = Math.random() * 0.6 + 0.4; } update() { this.x += this.speedX; this.y += this.speedY; if (this.y > canvas.height || this.x < -100 || this.x > canvas.width + 100) this.reset(); } draw() { ctx.strokeStyle = `rgba(255, 215, 0, ${this.alpha})`; ctx.lineWidth = this.width; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x - this.speedX * 3, this.y - this.speedY * 3); ctx.stroke(); } }
+    // 🔊 各種SE（効果音）
+    const playChipStack = () => {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const b = audioCtx.createOscillator();
+      const c = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      b.type = 'triangle';
+      b.frequency.setValueAtTime(140, now);
+      b.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+      c.type = 'sine';
+      c.frequency.setValueAtTime(2200, now);
+      c.frequency.exponentialRampToValueAtTime(1500, now + 0.02);
+      b.connect(g);
+      c.connect(g);
+      g.connect(audioCtx.destination);
+      b.start(now);
+      c.start(now);
+      g.gain.setValueAtTime(0.2, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      b.stop(now + 0.09);
+      c.stop(now + 0.09);
+    };
+
+    const playDiceCupShaker = () => {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      for (let i = 0; i < 7; i++) {
+        const d = i * 0.06;
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(120 + Math.random() * 90, now + d);
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.start(now + d);
+        g.gain.setValueAtTime(0.12 * (1 - i * 0.12), now + d);
+        g.gain.exponentialRampToValueAtTime(0.001, now + d + 0.04);
+        o.stop(now + d + 0.05);
+      }
+    };
+
+    const playCardFlip = () => {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(280, now);
+      o.frequency.exponentialRampToValueAtTime(90, now + 0.12);
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start(now);
+      g.gain.setValueAtTime(0.1, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      o.stop(now + 0.13);
+    };
+
+    const playJackpotChime = () => {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50].forEach((f, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(f, now + (i * 0.08));
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.start(now + (i * 0.08));
+        g.gain.setValueAtTime(0.06, now + (i * 0.08));
+        g.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.08) + 0.4);
+        o.stop(now + (i * 0.08) + 0.42);
+      });
+    };
+
+    // ==========================================================================
+    // 🎨 パーティクル演出
+    // ==========================================================================
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let sparks = [];
+    
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class GoldParticle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedY = Math.random() * 0.4 + 0.2;
+        this.speedX = Math.random() * 0.4 - 0.2;
+        this.alpha = Math.random() * 0.5 + 0.2;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y > canvas.height) {
+          this.y = -10;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+      draw() {
+        ctx.fillStyle = `rgba(252, 213, 140, ${this.alpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    class Spark {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+        this.length = Math.random() * 80 + 40;
+        this.speedY = Math.random() * 4 + 3;
+        this.speedX = (Math.random() * 3 + 2) * (Math.random() > 0.5 ? 1 : -1);
+        this.width = Math.random() * 1.5 + 0.5;
+        this.alpha = Math.random() * 0.6 + 0.4;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.y > canvas.height || this.x < -100 || this.x > canvas.width + 100) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.strokeStyle = `rgba(255, 215, 0, ${this.alpha})`;
+        ctx.lineWidth = this.width;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - this.speedX * 3, this.y - this.speedY * 3);
+        ctx.stroke();
+      }
+    }
+
     for (let i = 0; i < 50; i++) particles.push(new GoldParticle());
     for (let i = 0; i < 6; i++) sparks.push(new Spark());
-    const animateParticles = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); sparks.forEach(s => { s.update(); s.draw(); }); requestAnimationFrame(animateParticles); };
+    
+    const animateParticles = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      sparks.forEach(s => { s.update(); s.draw(); });
+      requestAnimationFrame(animateParticles);
+    };
     animateParticles();
 
     // ==========================================================================
-    // C. 🎬 トランジション扉アニメーション修正部
+    // 🎬 トランジション扉アニメーション（確実なバグ修正版）
     // ==========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       gsap.to("#main-roulette", { rotate: 360, duration: 65, repeat: -1, ease: "none" });
       gsap.to(".floating-suit", { x: '110vw', y: 'random(-50, 50)', rotate: 'random(-180, 180)', duration: 10, stagger: 2.5, repeat: -1, ease: "none" });
 
-      // ★初期設定：まずは最初からトビラを外側に開かせておく（オープニング画面を見せるため）
+      // オープニング初期化（扉は外側で待機）
       gsap.set("#gate-l", { left: "-50%" });
       gsap.set("#gate-r", { right: "-50%" });
 
@@ -831,63 +1062,71 @@
         .to("#logo-text", { opacity: 1, duration: 2.2, ease: "power3.out" }, "-=0.6")
         .to("#sub-title-text", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" }, "-=0.8")
         .to("#btn-wrap", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" }, "-=1.0")
-        .add(() => { gsap.to("#btn-wrap", { opacity: 0.8, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" }); });
+        .add(() => {
+          gsap.to("#btn-wrap", { opacity: 0.8, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+        });
     });
 
     // 🚪 ボタンを押してカジノへ入る時
     const openTheGates = () => {
-      initAudio(); startMusic(); playJackpotChime();
-      const gateL = document.getElementById('gate-l'), gateR = document.getElementById('gate-r');
+      initAudio(); 
+      startMusic(); 
+      playJackpotChime();
+      
+      const gateL = document.getElementById('gate-l');
+      const gateR = document.getElementById('gate-r');
 
       gsap.timeline()
-        // 1. まず一瞬で「ガシャーン！」と中央に閉じる（閉まり方のメリハリ）
-        .to(gateL, { left: '0%', duration: 0.3, ease: "power2.in" })
-        .to(gateR, { right: '0%', duration: 0.3, ease: "power2.in" }, "-=0.3")
-        // 2. 完全に閉じた裏側で画面を切り替える
-        .add(() => {
+        // 1. 中央にガシャン！と高速で閉じる
+        .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
+        .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
+        // 2. ★ .call() を使用して、安全に画面を切り替える
+        .call(() => {
           document.getElementById('opening-screen').style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        // 3. 高級感を持たせて「スーッ」と左右に美しく開く
-        .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut", delay: 0.2 })
+        // 3. 映画のように美しく左右に開く
+        .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut" })
         .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2");
     };
 
-    // 🃏 ゲーム画面へ移動する時
+    // 🃏 ロビーから各ゲーム画面へ移動する時
     const goToGame = (screenId, sfxType) => {
       if (sfxType === 'dice') playDiceCupShaker(); else playChipStack();
-      const gateL = document.getElementById('gate-l'), gateR = document.getElementById('gate-r');
+      
+      const gateL = document.getElementById('gate-l');
+      const gateR = document.getElementById('gate-r');
 
       gsap.timeline()
-        // 中央へ高速に閉じる
-        .to(gateL, { left: '0%', duration: 0.4, ease: "power2.in" })
-        .to(gateR, { right: '0%', duration: 0.4, ease: "power2.in" }, "-=0.4")
-        .add(() => {
+        .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
+        .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
+        .call(() => {
           document.getElementById('lobby-screen').style.display = 'none';
           document.getElementById(screenId).style.display = 'block';
         })
-        // 左右へスマートに開く
-        .to(gateL, { left: '-50%', duration: 1.0, ease: "power3.out", delay: 0.15 })
-        .to(gateR, { right: '-50%', duration: 1.0, ease: "power3.out" }, "-=1.0");
+        .to(gateL, { left: '-50%', duration: 1.1, ease: "power3.out" })
+        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1");
     };
 
-    // 🚪 ロビーに戻る時
+    // 🚪 ゲーム画面からロビーへ戻る時
     const backToLobby = (currentId) => {
       playCardFlip();
-      const gateL = document.getElementById('gate-l'), gateR = document.getElementById('gate-r');
+      
+      const gateL = document.getElementById('gate-l');
+      const gateR = document.getElementById('gate-r');
 
       gsap.timeline()
-        .to(gateL, { left: '0%', duration: 0.4, ease: "power2.in" })
-        .to(gateR, { right: '0%', duration: 0.4, ease: "power2.in" }, "-=0.4")
-        .add(() => {
+        .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
+        .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
+        .call(() => {
           document.getElementById(currentId).style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        .to(gateL, { left: '-50%', duration: 1.0, ease: "power3.out", delay: 0.15 })
-        .to(gateR, { right: '-50%', duration: 1.0, ease: "power3.out" }, "-=1.0");
+        .to(gateL, { left: '-50%', duration: 1.1, ease: "power3.out" })
+        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1");
     };
 
-    // エンドロール以降
+    // 🎬 エンドロール画面を表示
     const showCredits = () => {
       playChipStack();
       const rollInner = document.getElementById('roll-inner');
@@ -895,14 +1134,58 @@
       document.getElementById('credit-screen').style.display = 'flex';
       
       gsap.set(rollInner, { y: window.innerHeight });
-      if (bgmMasterGain) gsap.to(bgmMasterGain.gain, { value: 0, duration: 20 });
+      if (bgmMasterGain) {
+        gsap.to(bgmMasterGain.gain, { value: 0, duration: 20 });
+      }
 
       const totalHeight = rollInner.offsetHeight;
-      gsap.to(rollInner, { y: -totalHeight - 100, duration: totalHeight * 0.025, ease: "none", force3D: true, onComplete: fadeOutToWhite });
+      gsap.to(rollInner, { 
+        y: -totalHeight - 100, 
+        duration: totalHeight * 0.025, 
+        ease: "none", 
+        force3D: true, 
+        onComplete: fadeOutToWhite 
+      });
     };
 
-    const fadeOutToWhite = () => { stopMusic(); document.getElementById('thankyou-screen').style.display = 'flex'; gsap.timeline().to("#thankyou-screen", { opacity: 1, duration: 2.5, ease: "power2.inOut" }).add(() => { document.getElementById('credit-screen').style.display = 'none'; playJackpotChime(); }); };
-    const resetOpening = () => { gsap.timeline().to("#thankyou-screen", { opacity: 0, duration: 1.0, ease: "power2.inOut" }).add(() => { document.getElementById('thankyou-screen').style.display = 'none'; document.getElementById('lobby-screen').style.display = 'none'; document.getElementById('bj-screen').style.display = 'none'; document.getElementById('indian-screen').style.display = 'none'; document.getElementById('sicbo-screen').style.display = 'none'; document.getElementById('credit-screen').style.display = 'none'; document.getElementById('opening-screen').style.display = 'block'; gsap.set('#opening-screen', { opacity: 1 }); gsap.set('#gate-l', { left: '-50%' }); gsap.set('#gate-r', { right: '-50%' }); gsap.set("#pre-title-text", { opacity: 0, y: -10 }); gsap.set("#logo-text", { opacity: 0 }); gsap.set("#sub-title-text", { opacity: 0, y: 10 }); gsap.set("#btn-wrap", { opacity: 0, y: 0 }); gsap.timeline().to("#pre-title-text", { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" }).to("#logo-text", { opacity: 1, duration: 1.8, ease: "power3.out" }, "-=0.4").to("#sub-title-text", { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }, "-=0.6").to("#btn-wrap", { opacity: 1, duration: 1.0, ease: "power3.out" }, "-=0.8"); });
+    const fadeOutToWhite = () => { 
+      stopMusic(); 
+      document.getElementById('thankyou-screen').style.display = 'flex'; 
+      gsap.timeline()
+        .to("#thankyou-screen", { opacity: 1, duration: 2.5, ease: "power2.inOut" })
+        .call(() => { 
+          document.getElementById('credit-screen').style.display = 'none'; 
+          playJackpotChime(); 
+        }); 
+    };
+
+    const resetOpening = () => { 
+      gsap.timeline()
+        .to("#thankyou-screen", { opacity: 0, duration: 1.0, ease: "power2.inOut" })
+        .call(() => { 
+          document.getElementById('thankyou-screen').style.display = 'none'; 
+          document.getElementById('lobby-screen').style.display = 'none'; 
+          document.getElementById('bj-screen').style.display = 'none'; 
+          document.getElementById('indian-screen').style.display = 'none'; 
+          document.getElementById('sicbo-screen').style.display = 'none'; 
+          document.getElementById('credit-screen').style.display = 'none'; 
+          document.getElementById('opening-screen').style.display = 'block'; 
+          
+          gsap.set('#opening-screen', { opacity: 1 }); 
+          gsap.set('#gate-l', { left: '-50%' }); 
+          gsap.set('#gate-r', { right: '-50%' }); 
+          gsap.set("#pre-title-text", { opacity: 0, y: -10 }); 
+          gsap.set("#logo-text", { opacity: 0 }); 
+          gsap.set("#sub-title-text", { opacity: 0, y: 10 }); 
+          gsap.set("#btn-wrap", { opacity: 0, y: 0 }); 
+          
+          gsap.timeline()
+            .to("#pre-title-text", { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" })
+            .to("#logo-text", { opacity: 1, duration: 1.8, ease: "power3.out" }, "-=0.4")
+            .to("#sub-title-text", { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }, "-=0.6")
+            .to("#btn-wrap", { opacity: 1, duration: 1.0, ease: "power3.out" }, "-=0.8"); 
+        }); 
+    };
   </script>
 </body>
 </html>

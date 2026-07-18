@@ -1363,15 +1363,14 @@
 
       gsap.timeline()
         .to("#opening-screen", { opacity: 0, duration: 0.8, ease: "power2.inOut" })
-        .to(gateL, { left: '0%', duration: 0.5, ease: "power3.out" }, "-=0.5")
-        .to(gateR, { right: '0%', duration: 0.5, ease: "power3.out" }, "-=0.5")
+        .to(gateL, { left: '0%', duration: 0.5, ease: "expo.out", force3D: true }, "-=0.5")
+        .to(gateR, { right: '0%', duration: 0.5, ease: "expo.out", force3D: true }, "-=0.5")
         .add(() => {
           document.getElementById('opening-screen').style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        .to(gateL, { left: '-50%', duration: 1.6, ease: "power3.inOut", delay: 0.2 })
-        .to(gateR, { right: '-50%', duration: 1.6, ease: "power3.inOut" }, "-=1.6");
-    };
+        .to(gateL, { left: '-50%', duration: 1.4, ease: "power4.out", force3D: true, delay: 0.2 })
+        .to(gateR, { right: '-50%', duration: 1.4, ease: "power4.out", force3D: true }, "-=1.4");
 
     const goToGame = (screenId, sfxType) => {
       if (sfxType === 'dice') {
@@ -1381,18 +1380,18 @@
       }
       
       const gateL = document.getElementById('gate-l');
-      const gateR = document.getElementById('gate-r');
-
+      const gateR = document.getElementById('gate-l');
+                                            
       gsap.timeline()
-        .to(gateL, { left: '0%', duration: 0.6, ease: "power3.inOut" })
-        .to(gateR, { right: '0%', duration: 0.6, ease: "power3.inOut" }, "-=0.6")
+        .to(gateL, { left: '0%', duration: 0.5, ease: "expo.out", force3D: true })
+        .to(gateR, { right: '0%', duration: 0.5, ease: "expo.out", force3D: true }, "-=0.5")
         .add(() => {
           document.getElementById('lobby-screen').style.display = 'none';
           document.getElementById(screenId).style.display = 'block';
         })
-        .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut", delay: 0.15 })
-        .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2");
-    };
+        .to(gateL, { left: '-50%', duration: 1.2, ease: "power4.out", force3D: true, delay: 0.15 })
+        .to(gateR, { right: '-50%', duration: 1.2, ease: "power4.out", force3D: true }, "-=1.2");
+
 
     const backToLobby = (currentId) => {
       playCardFlip();
@@ -1400,15 +1399,14 @@
       const gateR = document.getElementById('gate-r');
 
       gsap.timeline()
-        .to(gateL, { left: '0%', duration: 0.6, ease: "power3.inOut" })
-        .to(gateR, { right: '0%', duration: 0.6, ease: "power3.inOut" }, "-=0.6")
+        .to(gateL, { left: '0%', duration: 0.5, ease: "expo.out", force3D: true })
+        .to(gateR, { right: '0%', duration: 0.5, ease: "expo.out", force3D: true }, "-=0.5")
         .add(() => {
           document.getElementById(currentId).style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut", delay: 0.15 })
-        .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2");
-    };
+        .to(gateL, { left: '-50%', duration: 1.2, ease: "power4.out", force3D: true, delay: 0.15 })
+        .to(gateR, { right: '-50%', duration: 1.2, ease: "power4.out", force3D: true }, "-=1.2");
 
     // ==========================================================================
     // D. エンドロール ＆ ホワイトアウト

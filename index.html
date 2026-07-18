@@ -63,6 +63,7 @@
       position: relative;
       overflow: hidden;
       transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 20; /* 前面に配置 */
     }
 
     .btn-gold-3d:hover {
@@ -240,7 +241,7 @@
     }
 
     /* ==========================================================================
-       3. ② 映画的トランジション扉（初期位置を修正）
+       3. ② 映画的トランジション扉（クリック判定ブロックバグ修正）
        ========================================================================== */
     .gate-container {
       position: fixed;
@@ -248,7 +249,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
+      pointer-events: none; /* 下の要素をクリックできるようにする */
       z-index: 9999;
     }
 
@@ -259,9 +260,10 @@
       height: 100%;
       background: linear-gradient(135deg, #180909, #050000);
       box-shadow: 0 0 100px rgba(0,0,0,0.98) inset;
+      pointer-events: none; /* 扉自体もクリックを貫通させる */
+      display: none; /* ★初期は完全に非表示にしてクリックの邪魔を防ぐ */
     }
 
-    /* 初期状態は画面の外側（開いた状態）にしておく */
     .gate-left { 
       left: -50%; 
       border-right: 3px solid var(--gold-solid); 
@@ -771,40 +773,29 @@
 
     const playPianoChord = (notes, time, duration) => {
       notes.forEach(midi => {
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        osc1.type = 'triangle';
-        osc2.type = 'sine';
+        const osc1 = audioCtx.createOscillator(), osc2 = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
+        osc1.type = 'triangle'; osc2.type = 'sine';
         const freq = 440 * Math.pow(2, (midi - 69) / 12);
-        osc1.frequency.value = freq;
-        osc2.frequency.value = freq * 2;
-        osc1.connect(gainNode);
-        osc2.connect(gainNode);
-        gainNode.connect(bgmMasterGain);
+        osc1.frequency.value = freq; osc2.frequency.value = freq * 2;
+        osc1.connect(gainNode); osc2.connect(gainNode); gainNode.connect(bgmMasterGain);
         gainNode.gain.setValueAtTime(0, time);
         gainNode.gain.linearRampToValueAtTime(0.04, time + 0.02);
         gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        osc1.start(time);
-        osc2.start(time);
-        osc1.stop(time + duration + 0.1);
-        osc2.stop(time + duration + 0.1);
+        osc1.start(time); osc2.start(time);
+        osc1.stop(time + duration + 0.1); osc2.stop(time + duration + 0.1);
       });
     };
 
     const playBassNote = (midi, time, duration) => {
-      const osc = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
+      const osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
       osc.type = 'triangle';
       const freq = 440 * Math.pow(2, (midi - 69) / 12);
       osc.frequency.setValueAtTime(freq, time);
-      osc.connect(gainNode);
-      gainNode.connect(bgmMasterGain);
+      osc.connect(gainNode); gainNode.connect(bgmMasterGain);
       gainNode.gain.setValueAtTime(0, time);
       gainNode.gain.linearRampToValueAtTime(0.12, time + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-      osc.start(time);
-      osc.stop(time + duration + 0.1);
+      osc.start(time); osc.stop(time + duration + 0.1);
     };
 
     const playHihat = (time, isSlam = false) => {
@@ -812,19 +803,11 @@
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = buffer;
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.value = isSlam ? 8000 : 11000;
-      const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(isSlam ? 0.04 : 0.02, time);
-      gain.gain.exponentialRampToValueAtTime(0.001, time + (isSlam ? 0.04 : 0.02));
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(bgmMasterGain);
-      noise.start(time);
-      noise.stop(time + 0.06);
+      const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+      const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = isSlam ? 8000 : 11000;
+      const gain = audioCtx.createGain(); gain.gain.setValueAtTime(isSlam ? 0.04 : 0.02, time); gain.gain.exponentialRampToValueAtTime(0.001, time + (isSlam ? 0.04 : 0.02));
+      noise.connect(filter); filter.connect(gain); gain.connect(bgmMasterGain);
+      noise.start(time); noise.stop(time + 0.06);
     };
 
     const scheduleNextBeats = () => {
@@ -842,10 +825,8 @@
 
     const startMusic = () => {
       if (musicIsPlaying) return;
-      initAudio();
-      musicIsPlaying = true;
-      nextNoteTime = audioCtx.currentTime + 0.05;
-      currentStep = 0;
+      initAudio(); musicIsPlaying = true;
+      nextNoteTime = audioCtx.currentTime + 0.05; currentStep = 0;
       schedulerInterval = setInterval(scheduleNextBeats, 50);
     };
 
@@ -936,15 +917,15 @@
     animateParticles();
 
     // ==========================================================================
-    // 🎬 トランジション扉アニメーション（競合バグ完全修正版）
+    // 🎬 トランジション扉アニメーション（クリック判定バグ完全修正版）
     // ==========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       gsap.to("#main-roulette", { rotate: 360, duration: 65, repeat: -1, ease: "none" });
       gsap.to(".floating-suit", { x: '110vw', y: 'random(-50, 50)', rotate: 'random(-180, 180)', duration: 10, stagger: 2.5, repeat: -1, ease: "none" });
 
-      // ★ 初期配置の競合を防ぐため、ここでは扉に触れず、完全に外側配置に固定しておきます。
-      gsap.set("#gate-l", { left: "-50%" });
-      gsap.set("#gate-r", { right: "-50%" });
+      // 初期起動時は扉を絶対に非表示＆外側待機
+      gsap.set("#gate-l", { left: "-50%", display: "none" });
+      gsap.set("#gate-r", { right: "-50%", display: "none" });
 
       gsap.timeline()
         .to("#spark", { scale: 3, opacity: 1, duration: 1.5, delay: 0.5, ease: "power4.out" })
@@ -958,7 +939,7 @@
         });
     });
 
-    // 🚪 ボタンを押してカジノへ入る時（バグ修正箇所）
+    // 🚪 ボタンを押してカジノへ入る時
     const openTheGates = () => {
       initAudio(); 
       startMusic(); 
@@ -967,12 +948,12 @@
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
-      // アニメーション前に確実に外側からスタートする設定を強制
-      gsap.set(gateL, { left: "-50%" });
-      gsap.set(gateR, { right: "-50%" });
+      // ★ボタンが押された瞬間、初めて扉の姿を現す（これでクリックの邪魔をしない）
+      gsap.set(gateL, { display: "block", left: "-50%" });
+      gsap.set(gateR, { display: "block", right: "-50%" });
 
       gsap.timeline()
-        // 1. 中央にガシャン！と高速で閉じる（ここからアニメーション開始）
+        // 1. 中央にガシャン！と高速で閉じる
         .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
         .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
         // 2. 閉じた瞬間に裏側で画面を切り替える
@@ -982,7 +963,9 @@
         })
         // 3. 左右にスーーッと美しく開く
         .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut" })
-        .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2");
+        .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2")
+        // 4. 開ききったら再度非表示にして、ロビーのボタンクリックの邪魔をさせない
+        .set([gateL, gateR], { display: "none" });
     };
 
     // 🃏 ロビーから各ゲーム画面へ移動する時
@@ -992,6 +975,9 @@
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
+      gsap.set(gateL, { display: "block", left: "-50%" });
+      gsap.set(gateR, { display: "block", right: "-50%" });
+
       gsap.timeline()
         .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
         .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
@@ -1000,7 +986,8 @@
           document.getElementById(screenId).style.display = 'block';
         })
         .to(gateL, { left: '-50%', duration: 1.1, ease: "power3.out" })
-        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1");
+        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1")
+        .set([gateL, gateR], { display: "none" });
     };
 
     // 🚪 ゲーム画面からロビーへ戻る時
@@ -1010,6 +997,9 @@
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
+      gsap.set(gateL, { display: "block", left: "-50%" });
+      gsap.set(gateR, { display: "block", right: "-50%" });
+
       gsap.timeline()
         .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
         .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
@@ -1018,7 +1008,8 @@
           document.getElementById('lobby-screen').style.display = 'block';
         })
         .to(gateL, { left: '-50%', duration: 1.1, ease: "power3.out" })
-        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1");
+        .to(gateR, { right: '-50%', duration: 1.1, ease: "power3.out" }, "-=1.1")
+        .set([gateL, gateR], { display: "none" });
     };
 
     // 🎬 エンドロール画面を表示
@@ -1067,8 +1058,8 @@
           document.getElementById('opening-screen').style.display = 'block'; 
           
           gsap.set('#opening-screen', { opacity: 1 }); 
-          gsap.set('#gate-l', { left: '-50%' }); 
-          gsap.set('#gate-r', { right: '-50%' }); 
+          gsap.set('#gate-l', { left: '-50%', display: "none" }); 
+          gsap.set('#gate-r', { right: '-50%', display: "none" }); 
           gsap.set("#pre-title-text", { opacity: 0, y: -10 }); 
           gsap.set("#logo-text", { opacity: 0 }); 
           gsap.set("#sub-title-text", { opacity: 0, y: 10 }); 

@@ -1421,16 +1421,24 @@
 
       lobbyScreen.style.display = 'none';
       creditScreen.style.display = 'flex';
+      
+      // 画面の下端（100vh）からスタートさせる
       gsap.set(rollInner, { y: window.innerHeight });
 
       if (bgmMasterGain) {
         gsap.to(bgmMasterGain.gain, { value: 0, duration: 20 });
       }
 
+      // クレジット全体の高さに応じて、ちょうどいい速度（秒数）を自動計算
+      const totalHeight = rollInner.offsetHeight;
+      const smoothDuration = totalHeight * 0.025; // 数字を大きくすると遅く、小さくすると早くなります
+
+      // 🎥 ここでパソコンのグラフィックパワー（GPU）を強制解放して超滑らかにします
       gsap.to(rollInner, {
-        y: -rollInner.offsetHeight - 50,
-        duration: 22,
-        ease: "none",
+        y: -totalHeight - 100,
+        duration: smoothDuration,
+        ease: "none",         // 途中でガタつかないように等速で動かす
+        force3D: true,        // ★3Dレンダリングを強制して、文字のブレやカクつきを完全防止
         onComplete: () => {
           fadeOutToWhite();
         }

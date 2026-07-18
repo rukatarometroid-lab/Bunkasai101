@@ -240,7 +240,7 @@
     }
 
     /* ==========================================================================
-       3. ② 映画的トランジション扉（固定配置）
+       3. ② 映画的トランジション扉（初期位置を修正）
        ========================================================================== */
     .gate-container {
       position: fixed;
@@ -261,6 +261,7 @@
       box-shadow: 0 0 100px rgba(0,0,0,0.98) inset;
     }
 
+    /* 初期状態は画面の外側（開いた状態）にしておく */
     .gate-left { 
       left: -50%; 
       border-right: 3px solid var(--gold-solid); 
@@ -646,7 +647,7 @@
       <div class="signboard">
         <div class="sign-header cinema-text">BLACKJACK RULE</div>
         <div class="sign-body">
-          <p>ディーラーとプレイヤーとの勝勝負で、配られたカードの合計が<strong>「21」を超えない範囲で21に近い方が勝ち</strong>となります。</p>
+          <p>ディーラーとプレイヤーとの勝負で、配られたカードの合計が<strong>「21」を超えない範囲で21に近い方が勝ち</strong>となります。</p>
           <div class="rule-section-title">カードのカウントルール</div>
           <ul>
             <li><strong>K, Q, J, 10</strong>：すべて「10」としてカウント</li>
@@ -733,7 +734,7 @@
 
   <script>
     // ==========================================================================
-    // 🎵 WEB AUDIO BGM GENERATOR (完全に1行ずつ展開)
+    // 🎵 WEB AUDIO BGM GENERATOR
     // ==========================================================================
     let audioCtx = null;
     let bgmMasterGain = null;
@@ -747,21 +748,13 @@
     const totalSteps = 64;
     
     const chords = [
-      [60, 63, 67, 70],
-      [60, 63, 67, 70],
-      [58, 61, 65, 68],
-      [58, 61, 65, 68],
-      [60, 63, 68, 72],
-      [59, 62, 65, 68],
-      [60, 63, 67, 70],
-      [60, 63, 67, 70]
+      [60, 63, 67, 70], [60, 63, 67, 70], [58, 61, 65, 68], [58, 61, 65, 68],
+      [60, 63, 68, 72], [59, 62, 65, 68], [60, 63, 67, 70], [60, 63, 67, 70]
     ];
     
     const bassPatterns = [
-      36, 43, 41, 39, 36, 39, 41, 42,
-      43, 46, 45, 43, 41, 38, 36, 35,
-      36, 40, 41, 43, 45, 41, 43, 47,
-      48, 43, 41, 39, 38, 35, 36, 38
+      36, 43, 41, 39, 36, 39, 41, 42, 43, 46, 45, 43, 41, 38, 36, 35,
+      36, 40, 41, 43, 45, 41, 43, 47, 48, 43, 41, 39, 38, 35, 36, 38
     ];
 
     const initAudio = () => {
@@ -781,22 +774,17 @@
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
-        
         osc1.type = 'triangle';
         osc2.type = 'sine';
-        
         const freq = 440 * Math.pow(2, (midi - 69) / 12);
         osc1.frequency.value = freq;
         osc2.frequency.value = freq * 2;
-        
         osc1.connect(gainNode);
         osc2.connect(gainNode);
         gainNode.connect(bgmMasterGain);
-        
         gainNode.gain.setValueAtTime(0, time);
         gainNode.gain.linearRampToValueAtTime(0.04, time + 0.02);
         gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        
         osc1.start(time);
         osc2.start(time);
         osc1.stop(time + duration + 0.1);
@@ -807,18 +795,14 @@
     const playBassNote = (midi, time, duration) => {
       const osc = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
-      
       osc.type = 'triangle';
       const freq = 440 * Math.pow(2, (midi - 69) / 12);
       osc.frequency.setValueAtTime(freq, time);
-      
       osc.connect(gainNode);
       gainNode.connect(bgmMasterGain);
-      
       gainNode.gain.setValueAtTime(0, time);
       gainNode.gain.linearRampToValueAtTime(0.12, time + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-      
       osc.start(time);
       osc.stop(time + duration + 0.1);
     };
@@ -827,26 +811,18 @@
       const bufferSize = audioCtx.sampleRate * 0.05;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
-      
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-      
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
       const noise = audioCtx.createBufferSource();
       noise.buffer = buffer;
-      
       const filter = audioCtx.createBiquadFilter();
       filter.type = 'highpass';
       filter.frequency.value = isSlam ? 8000 : 11000;
-      
       const gain = audioCtx.createGain();
       gain.gain.setValueAtTime(isSlam ? 0.04 : 0.02, time);
       gain.gain.exponentialRampToValueAtTime(0.001, time + (isSlam ? 0.04 : 0.02));
-      
       noise.connect(filter);
       filter.connect(gain);
       gain.connect(bgmMasterGain);
-      
       noise.start(time);
       noise.stop(time + 0.06);
     };
@@ -855,19 +831,10 @@
       while (nextNoteTime < audioCtx.currentTime + 0.15) {
         const bar = Math.floor(currentStep / 8) % 8;
         const beatInBar = currentStep % 8;
-        
-        if (beatInBar === 0 || beatInBar === 3 || beatInBar === 6) {
-          playPianoChord(chords[bar], nextNoteTime, stepTime * 1.8);
-        }
-        if (currentStep % 2 === 0) {
-          playBassNote(bassPatterns[Math.floor(currentStep / 2) % 32], nextNoteTime, stepTime * 1.8);
-        }
-        if (currentStep % 2 === 0) {
-          playHihat(nextNoteTime, true);
-        } else if (currentStep % 4 === 1 || currentStep % 4 === 3) {
-          playHihat(nextNoteTime, false);
-        }
-        
+        if (beatInBar === 0 || beatInBar === 3 || beatInBar === 6) playPianoChord(chords[bar], nextNoteTime, stepTime * 1.8);
+        if (currentStep % 2 === 0) playBassNote(bassPatterns[Math.floor(currentStep / 2) % 32], nextNoteTime, stepTime * 1.8);
+        if (currentStep % 2 === 0) playHihat(nextNoteTime, true);
+        else if (currentStep % 4 === 1 || currentStep % 4 === 3) playHihat(nextNoteTime, false);
         nextNoteTime += stepTime;
         currentStep = (currentStep + 1) % totalSteps;
       }
@@ -883,50 +850,29 @@
     };
 
     const stopMusic = () => {
-      if (schedulerInterval) {
-        clearInterval(schedulerInterval);
-      }
+      if (schedulerInterval) clearInterval(schedulerInterval);
       musicIsPlaying = false;
     };
 
-    // 🔊 各種SE（効果音）
     const playChipStack = () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
-      const b = audioCtx.createOscillator();
-      const c = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      b.type = 'triangle';
-      b.frequency.setValueAtTime(140, now);
-      b.frequency.exponentialRampToValueAtTime(80, now + 0.08);
-      c.type = 'sine';
-      c.frequency.setValueAtTime(2200, now);
-      c.frequency.exponentialRampToValueAtTime(1500, now + 0.02);
-      b.connect(g);
-      c.connect(g);
-      g.connect(audioCtx.destination);
-      b.start(now);
-      c.start(now);
-      g.gain.setValueAtTime(0.2, now);
-      g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-      b.stop(now + 0.09);
-      c.stop(now + 0.09);
+      const b = audioCtx.createOscillator(), c = audioCtx.createOscillator(), g = audioCtx.createGain();
+      b.type = 'triangle'; b.frequency.setValueAtTime(140, now); b.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+      c.type = 'sine'; c.frequency.setValueAtTime(2200, now); c.frequency.exponentialRampToValueAtTime(1500, now + 0.02);
+      b.connect(g); c.connect(g); g.connect(audioCtx.destination);
+      b.start(now); c.start(now); g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      b.stop(now + 0.09); c.stop(now + 0.09);
     };
 
     const playDiceCupShaker = () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
       for (let i = 0; i < 7; i++) {
-        const d = i * 0.06;
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.type = 'triangle';
-        o.frequency.setValueAtTime(120 + Math.random() * 90, now + d);
-        o.connect(g);
-        g.connect(audioCtx.destination);
-        o.start(now + d);
-        g.gain.setValueAtTime(0.12 * (1 - i * 0.12), now + d);
-        g.gain.exponentialRampToValueAtTime(0.001, now + d + 0.04);
+        const d = i * 0.06, o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = 'triangle'; o.frequency.setValueAtTime(120 + Math.random() * 90, now + d);
+        o.connect(g); g.connect(audioCtx.destination); o.start(now + d);
+        g.gain.setValueAtTime(0.12 * (1 - i * 0.12), now + d); g.gain.exponentialRampToValueAtTime(0.001, now + d + 0.04);
         o.stop(now + d + 0.05);
       }
     };
@@ -934,16 +880,10 @@
     const playCardFlip = () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = 'triangle';
-      o.frequency.setValueAtTime(280, now);
-      o.frequency.exponentialRampToValueAtTime(90, now + 0.12);
-      o.connect(g);
-      g.connect(audioCtx.destination);
-      o.start(now);
-      g.gain.setValueAtTime(0.1, now);
-      g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'triangle'; o.frequency.setValueAtTime(280, now); o.frequency.exponentialRampToValueAtTime(90, now + 0.12);
+      o.connect(g); g.connect(audioCtx.destination); o.start(now);
+      g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
       o.stop(now + 0.13);
     };
 
@@ -951,15 +891,10 @@
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
       [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50].forEach((f, i) => {
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.type = 'sine';
-        o.frequency.setValueAtTime(f, now + (i * 0.08));
-        o.connect(g);
-        g.connect(audioCtx.destination);
-        o.start(now + (i * 0.08));
-        g.gain.setValueAtTime(0.06, now + (i * 0.08));
-        g.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.08) + 0.4);
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(f, now + (i * 0.08));
+        o.connect(g); g.connect(audioCtx.destination); o.start(now + (i * 0.08));
+        g.gain.setValueAtTime(0.06, now + (i * 0.08)); g.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.08) + 0.4);
         o.stop(now + (i * 0.08) + 0.42);
       });
     };
@@ -969,68 +904,24 @@
     // ==========================================================================
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
-    let sparks = [];
+    let particles = [], sparks = [];
     
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
+    const resizeCanvas = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
     class GoldParticle {
       constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 1;
-        this.speedY = Math.random() * 0.4 + 0.2;
-        this.speedX = Math.random() * 0.4 - 0.2;
-        this.alpha = Math.random() * 0.5 + 0.2;
-      }
-      update() {
-        this.y += this.speedY;
-        this.x += this.speedX;
-        if (this.y > canvas.height) {
-          this.y = -10;
-          this.x = Math.random() * canvas.width;
-        }
-      }
-      draw() {
-        ctx.fillStyle = `rgba(252, 213, 140, ${this.alpha})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 1; this.speedY = Math.random() * 0.4 + 0.2; this.speedX = Math.random() * 0.4 - 0.2; this.alpha = Math.random() * 0.5 + 0.2; }
+      update() { this.y += this.speedY; this.x += this.speedX; if (this.y > canvas.height) { this.y = -10; this.x = Math.random() * canvas.width; } }
+      draw() { ctx.fillStyle = `rgba(252, 213, 140, ${this.alpha})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
     }
 
     class Spark {
       constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = -20;
-        this.length = Math.random() * 80 + 40;
-        this.speedY = Math.random() * 4 + 3;
-        this.speedX = (Math.random() * 3 + 2) * (Math.random() > 0.5 ? 1 : -1);
-        this.width = Math.random() * 1.5 + 0.5;
-        this.alpha = Math.random() * 0.6 + 0.4;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.y > canvas.height || this.x < -100 || this.x > canvas.width + 100) {
-          this.reset();
-        }
-      }
-      draw() {
-        ctx.strokeStyle = `rgba(255, 215, 0, ${this.alpha})`;
-        ctx.lineWidth = this.width;
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x - this.speedX * 3, this.y - this.speedY * 3);
-        ctx.stroke();
-      }
+      reset() { this.x = Math.random() * canvas.width; this.y = -20; this.length = Math.random() * 80 + 40; this.speedY = Math.random() * 4 + 3; this.speedX = (Math.random() * 3 + 2) * (Math.random() > 0.5 ? 1 : -1); this.width = Math.random() * 1.5 + 0.5; this.alpha = Math.random() * 0.6 + 0.4; }
+      update() { this.x += this.speedX; this.y += this.speedY; if (this.y > canvas.height || this.x < -100 || this.x > canvas.width + 100) this.reset(); }
+      draw() { ctx.strokeStyle = `rgba(255, 215, 0, ${this.alpha})`; ctx.lineWidth = this.width; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x - this.speedX * 3, this.y - this.speedY * 3); ctx.stroke(); }
     }
 
     for (let i = 0; i < 50; i++) particles.push(new GoldParticle());
@@ -1045,13 +936,13 @@
     animateParticles();
 
     // ==========================================================================
-    // 🎬 トランジション扉アニメーション（確実なバグ修正版）
+    // 🎬 トランジション扉アニメーション（競合バグ完全修正版）
     // ==========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       gsap.to("#main-roulette", { rotate: 360, duration: 65, repeat: -1, ease: "none" });
       gsap.to(".floating-suit", { x: '110vw', y: 'random(-50, 50)', rotate: 'random(-180, 180)', duration: 10, stagger: 2.5, repeat: -1, ease: "none" });
 
-      // オープニング初期化（扉は外側で待機）
+      // ★ 初期配置の競合を防ぐため、ここでは扉に触れず、完全に外側配置に固定しておきます。
       gsap.set("#gate-l", { left: "-50%" });
       gsap.set("#gate-r", { right: "-50%" });
 
@@ -1067,7 +958,7 @@
         });
     });
 
-    // 🚪 ボタンを押してカジノへ入る時
+    // 🚪 ボタンを押してカジノへ入る時（バグ修正箇所）
     const openTheGates = () => {
       initAudio(); 
       startMusic(); 
@@ -1076,16 +967,20 @@
       const gateL = document.getElementById('gate-l');
       const gateR = document.getElementById('gate-r');
 
+      // アニメーション前に確実に外側からスタートする設定を強制
+      gsap.set(gateL, { left: "-50%" });
+      gsap.set(gateR, { right: "-50%" });
+
       gsap.timeline()
-        // 1. 中央にガシャン！と高速で閉じる
+        // 1. 中央にガシャン！と高速で閉じる（ここからアニメーション開始）
         .to(gateL, { left: '0%', duration: 0.35, ease: "power2.in" })
         .to(gateR, { right: '0%', duration: 0.35, ease: "power2.in" }, "-=0.35")
-        // 2. ★ .call() を使用して、安全に画面を切り替える
+        // 2. 閉じた瞬間に裏側で画面を切り替える
         .call(() => {
           document.getElementById('opening-screen').style.display = 'none';
           document.getElementById('lobby-screen').style.display = 'block';
         })
-        // 3. 映画のように美しく左右に開く
+        // 3. 左右にスーーッと美しく開く
         .to(gateL, { left: '-50%', duration: 1.2, ease: "power3.inOut" })
         .to(gateR, { right: '-50%', duration: 1.2, ease: "power3.inOut" }, "-=1.2");
     };

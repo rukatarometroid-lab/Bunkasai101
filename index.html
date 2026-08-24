@@ -51,7 +51,7 @@
     }
 
     /* ==========================================================================
-       👑 漆黒に黄金に輝く「ENTER CASINO」ボタンデザイン（完全再現）
+       👑 漆黒に黄金に輝く「ENTER CASINO」ボタンデザイン
        ========================================================================== */
     .btn-gold-3d {
       background: linear-gradient(180deg, rgba(30, 20, 10, 0.9) 0%, rgba(10, 5, 0, 0.95) 100%);
@@ -285,7 +285,7 @@
     }
 
     /* ==========================================================================
-       4. ③ ロビー（VIPルーム）
+       4. ③ ロビー（VIPルーム） - 5ゲーム対応レスポンシブ
        ========================================================================== */
     #lobby-screen {
       background: var(--casino-bg);
@@ -314,26 +314,12 @@
     }
 
     .lobby-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
       width: 100%;
-      max-width: 850px;
-    }
-
-    @media (max-width: 600px) {
-      .lobby-cards {
-        grid-template-columns: 1fr;
-        gap: 15px;
-        max-width: 300px;
-      }
-      .lobby-card {
-        height: 13vh !important;
-        min-height: 80px !important;
-      }
-      .lobby-title-area h2 {
-        font-size: 1.3rem;
-      }
+      max-width: 950px;
     }
 
     .lobby-card {
@@ -342,8 +328,10 @@
       outline: 1px solid rgba(252, 237, 197, 0.1);
       outline-offset: -5px;
       border-radius: 4px;
-      height: 25vh;
-      min-height: 160px;
+      width: calc(33.33% - 15px);
+      min-width: 170px;
+      height: 20vh;
+      min-height: 130px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -375,8 +363,8 @@
     }
 
     .card-icon {
-      font-size: 2.6rem;
-      margin-bottom: 10px;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
       color: var(--gold-solid);
       filter: drop-shadow(0 2px 5px rgba(0,0,0,0.9));
       transition: color 0.3s;
@@ -386,10 +374,11 @@
     }
 
     .card-name {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.15em;
       color: #eae5da;
+      text-align: center;
       transition: color 0.3s;
     }
     .lobby-card:hover .card-name {
@@ -400,6 +389,29 @@
       font-size: 0.75rem;
       color: #6a5340;
       letter-spacing: 0.15em;
+    }
+
+    @media (max-width: 600px) {
+      .lobby-cards {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        max-width: 320px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+      .lobby-card {
+        width: 100%;
+        height: 10vh !important;
+        min-height: 65px !important;
+      }
+      .lobby-title-area h2 {
+        font-size: 1.3rem;
+      }
+      .card-icon {
+        font-size: 1.6rem;
+        margin-bottom: 2px;
+      }
     }
 
     /* ==========================================================================
@@ -529,7 +541,6 @@
     /* ==========================================================================
        6. 🎬 アップグレード版シネマティック・エンドロール
        ========================================================================== */
-    /* エンドロール内の写真デザイン */
     .credit-photo-wrap {
       width: 100%;
       display: flex;
@@ -540,13 +551,12 @@
 
     .credit-photo {
       width: 100%;
-      max-width: 280px; /* アップの写真が綺麗に収まるサイズ */
+      max-width: 280px;
       height: auto;
       border-radius: 8px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(209, 158, 83, 0.25);
       border: 1px solid rgba(209, 158, 83, 0.4);
     }
-
 
     #credit-screen {
       background: #000;
@@ -635,7 +645,7 @@
        7. ❄️ ホワイトアウト & Thank You 画面
        ========================================================================== */
     #thankyou-screen {
-      background: #ffffff; /* 純白背景 */
+      background: #ffffff;
       z-index: 300;
       display: none;
       flex-direction: column;
@@ -653,7 +663,7 @@
       font-family: 'Cinzel', serif;
       font-size: 2.5rem;
       font-weight: 900;
-      color: #111111; /* 白背景に映える重厚な黒 */
+      color: #111111;
       letter-spacing: 0.3em;
       line-height: 1.5;
       margin-bottom: 50px;
@@ -737,6 +747,14 @@
         <div class="lobby-card" onclick="goToGame('indian-screen', 'card')">
           <div class="card-icon">🃏</div>
           <div class="card-name cinema-text">INDIAN POKER</div>
+        </div>
+        <div class="lobby-card" onclick="goToGame('babanuki-screen', 'card')">
+          <div class="card-icon">👑</div>
+          <div class="card-name cinema-text">BET BABANUKI</div>
+        </div>
+        <div class="lobby-card" onclick="goToGame('poker-screen', 'card')">
+          <div class="card-icon">♦</div>
+          <div class="card-name cinema-text">BET POKER</div>
         </div>
         <div class="lobby-card" onclick="goToGame('sicbo-screen', 'dice')">
           <div class="card-icon">🎲</div>
@@ -832,7 +850,122 @@
     </div>
   </section>
 
-  <!-- ⑥ SIC BO ルール -->
+  <!-- ⑥ BET BABANUKI ルール (追加) -->
+  <section id="babanuki-screen" class="screen">
+    <div class="table-rim"></div>
+    <button class="exit-btn cinema-text" onclick="backToLobby('babanuki-screen')">LOBBY</button>
+
+    <div class="game-content">
+      <div class="rule-icon">👑</div>
+      <div class="signboard">
+        <div class="sign-header cinema-text">BET BABANUKI RULE</div>
+        <div class="sign-body">
+          <p>「BETババ抜き（最終局面）」は、究極に凝縮された3枚のカードで繰り広げられるスピード決着の心理戦です。<strong>自分の「勝敗の行方」を事前に予想してベット</strong>します。</p>
+
+          <div class="rule-section-title">使用カード＆初期配置</div>
+          <ul>
+            <li><strong>使用カード</strong>：トランプ3枚（ペアになる2枚 ＋ ジョーカー1枚）</li>
+            <li><strong>参加者（プレイヤー）</strong>：1枚</li>
+            <li><strong>ディーラー</strong>：2枚（合計3枚）</li>
+          </ul>
+
+          <div class="rule-section-title">① 事前ベット選択</div>
+          <p>カードを引く前に、自身の最終結果を予想してベットします。</p>
+
+          <table class="odds-table">
+            <thead>
+              <tr>
+                <th>予想ベット</th>
+                <th>条件・説明</th>
+                <th>配当（オッズ）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color: #4da6ff;">WIN (自己勝利)</strong></td>
+                <td>自分が先に手札を無くして勝利する。</td>
+                <td><strong style="color: var(--gold-bright);">2 倍</strong></td>
+              </tr>
+              <tr>
+                <td><strong style="color: #ff4d4d;">LOSE (自己敗北)</strong></td>
+                <td>最後にジョーカーを保持して自分が敗北する。<br><span style="font-size: 0.75rem; color: #aaa;">※あえて負ける誘導が必要なため高配当！</span></td>
+                <td><strong style="color: var(--gold-bright);">3 倍</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rule-section-title">② プレイ進行</div>
+          <ul>
+            <li>通常通り、順番に相手の手札からカードを1枚ずつ引きます。</li>
+            <li>同じ数字のペアができたら場に捨てます。</li>
+            <li><strong>勝利条件</strong>：先に手札が無くなったプレイヤーの勝ち。</li>
+            <li><strong>敗北条件</strong>：最後にジョーカーを持っていたプレイヤーの負け。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑦ BET POKER ルール (追加) -->
+  <section id="poker-screen" class="screen">
+    <div class="table-rim"></div>
+    <button class="exit-btn cinema-text" onclick="backToLobby('poker-screen')">LOBBY</button>
+
+    <div class="game-content">
+      <div class="rule-icon">♦</div>
+      <div class="signboard">
+        <div class="sign-header cinema-text">BET POKER RULE</div>
+        <div class="sign-body">
+          <p>「BETポーカー」は、配布前のカードに対して勝敗を予想して賭ける、変則ポーカーゲームです。通常の5枚ドローポーカーのルールに基づき、役の強さで勝敗を決します。</p>
+
+          <div class="rule-section-title">① 事前ベット選択</div>
+          <p>カードが配られる前に、勝負の行方を以下の3つから選択してベットします。</p>
+
+          <table class="odds-table">
+            <thead>
+              <tr>
+                <th>ベット選択</th>
+                <th>条件</th>
+                <th>配当（オッズ）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color: #4da6ff;">🟦 PLAYER WIN</strong></td>
+                <td>参加者（プレイヤー）が役の強さで勝つ。</td>
+                <td><strong style="color: var(--gold-bright);">2 倍</strong></td>
+              </tr>
+              <tr>
+                <td><strong style="color: #ff4d4d;">🟥 DEALER WIN</strong></td>
+                <td>ディーラーが役の強さで勝つ。</td>
+                <td><strong style="color: var(--gold-bright);">2 倍</strong></td>
+              </tr>
+              <tr>
+                <td><strong style="color: #ffd700;">🟨 DRAW</strong></td>
+                <td>両者が全く同じ役・強さで引き分ける。</td>
+                <td><strong style="color: var(--gold-bright);">5 倍</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rule-section-title">② カード配布 ＆ 交換</div>
+          <ul>
+            <li>両者にそれぞれ5枚ずつのカードが配られます。</li>
+            <li>参加者・ディーラー共に、手札の不要なカードを<strong>「最大2回まで」</strong>交換することが可能です。</li>
+          </ul>
+
+          <div class="rule-section-title">③ 勝敗判定</div>
+          <ul>
+            <li>ポーカーの標準的な役の強さで比較します。</li>
+            <li><strong>役の優先順</strong>：ロイヤルフラッシュ ＞ ストレートフラッシュ ＞ フォーカード ＞ フルハウス ＞ フラッシュ ＞ ストレート ＞ スリーカード ＞ ツーペア ＞ ワンペア ＞ ハイカード</li>
+            <li>同役の場合は、より高い数字（ランク）を持っている方の勝利となります。（例：Aのワンペア ＞ Kのワンペア）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑧ SIC BO ルール -->
   <section id="sicbo-screen" class="screen">
     <div class="table-rim"></div>
     <button class="exit-btn cinema-text" onclick="backToLobby('sicbo-screen')">LOBBY</button>
@@ -923,7 +1056,7 @@
     </div>
   </section>
 
-  <!-- ⑦ エンドロール -->
+  <!-- ⑨ エンドロール -->
   <div id="credit-screen" class="screen">
     <div class="credit-container">
       <div class="credit-roll" id="roll-inner">
@@ -954,7 +1087,6 @@
           <p class="credit-name">角貝 湊斗</p>
         </div>
 
-        <!-- ★ 追加：岡田さんのクレジット -->
         <div class="credit-section">
           <p class="credit-title">自称二刀流アーティスト</p>
           <p class="credit-name">岡田 陽輝</p>
@@ -985,7 +1117,7 @@
     </div>
   </div>
 
-  <!-- ⑧ ❄️ ホワイトアウト & Thank You 画面 -->
+  <!-- ⑩ ❄️ ホワイトアウト & Thank You 画面 -->
   <div id="thankyou-screen" class="screen">
     <div class="thankyou-wrap">
       <h2 class="thankyou-title cinema-text">THANK YOU FOR PLAYING</h2>
@@ -1422,23 +1554,20 @@
       lobbyScreen.style.display = 'none';
       creditScreen.style.display = 'flex';
       
-      // 画面の下端（100vh）からスタートさせる
       gsap.set(rollInner, { y: window.innerHeight });
 
       if (bgmMasterGain) {
         gsap.to(bgmMasterGain.gain, { value: 0, duration: 20 });
       }
 
-      // クレジット全体の高さに応じて、ちょうどいい速度（秒数）を自動計算
       const totalHeight = rollInner.offsetHeight;
-      const smoothDuration = totalHeight * 0.025; // 数字を大きくすると遅く、小さくすると早くなります
+      const smoothDuration = totalHeight * 0.025;
 
-      // 🎥 ここでパソコンのグラフィックパワー（GPU）を強制解放して超滑らかにします
       gsap.to(rollInner, {
         y: -totalHeight - 100,
         duration: smoothDuration,
-        ease: "none",         // 途中でガタつかないように等速で動かす
-        force3D: true,        // ★3Dレンダリングを強制して、文字のブレやカクつきを完全防止
+        ease: "none",
+        force3D: true,
         onComplete: () => {
           fadeOutToWhite();
         }
@@ -1473,6 +1602,8 @@
           document.getElementById('lobby-screen').style.display = 'none';
           document.getElementById('bj-screen').style.display = 'none';
           document.getElementById('indian-screen').style.display = 'none';
+          document.getElementById('babanuki-screen').style.display = 'none';
+          document.getElementById('poker-screen').style.display = 'none';
           document.getElementById('sicbo-screen').style.display = 'none';
           document.getElementById('credit-screen').style.display = 'none';
           
@@ -1496,4 +1627,4 @@
     };
   </script>
 </body>
-            </html>
+</html>
